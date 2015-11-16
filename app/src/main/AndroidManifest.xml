@@ -13,21 +13,13 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity android:name=".AboutActivity" >
         </activity>
-        <activity android:name=".RegleActivity" >
+        <activity android:name=".RegleActivity">
         </activity>
-        <activity
-            android:name=".CasseTeteActivity"
-            android:label="@string/title_activity_casse_tete"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
-        <activity
-            android:name=".CasseTeteView"
-            android:label="@string/title_activity_casse_tete_view"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
+
         <activity android:name=".PlayActivity" >
         </activity>
     </application>

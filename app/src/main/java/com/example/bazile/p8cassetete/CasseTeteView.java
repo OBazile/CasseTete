@@ -25,7 +25,7 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
     // taille de la carte
     static final int    carteWidth    = 10;
     static final int    carteHeight   = 10;
-    static final int    carteTileSize = 20;
+    static final int    carteTileSize = 100;
     int carteCentreGauche,carteCentreHaut;
 
 
@@ -42,6 +42,9 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
     public CasseTeteView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
+        holder = getHolder();
+        holder.addCallback(this);
+
         Context	= context;
         Res 		= Context.getResources();
         Fondecran = BitmapFactory.decodeResource(Res, R.drawable.fond_ecran);
@@ -51,7 +54,7 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
         casseJaune = BitmapFactory.decodeResource(Res, R.drawable.cube3);
         casseVide = BitmapFactory.decodeResource(Res,R.drawable.cube4);
         initparameters();
-        //cv_thread = new Thread(this);
+        cv_thread = new Thread(this);
     }
 
 
@@ -63,15 +66,15 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
                     case 1:
                         canvas.drawBitmap(casseRouge, carteCentreGauche+ j*carteTileSize, carteCentreHaut+ i*carteTileSize, null);
                         break;
-                    //default:
-                       // canvas.drawBitmap(casseRouge, carteCentreGauche+ j*carteTileSize,carteCentreHaut+ i*carteTileSize, null);
-                       // break;
+                    default:
+                        canvas.drawBitmap(casseRouge, carteCentreGauche+ j*carteTileSize,carteCentreHaut+ i*carteTileSize, null);
+                        break;
                 }
             }
     }
 
     private void nDraw(Canvas canvas) {
-        canvas.drawRGB(44, 44, 44);
+        canvas.drawBitmap(Fondecran,getHeight(),getWidth(),null);
         paintCarte(canvas);
 
     }
@@ -116,7 +119,7 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         Log.i("-> FCT <-", "surfaceChanged " + width + " - " + height);
-        //initparameters();
+        initparameters();
     }
 
     @Override
@@ -129,6 +132,7 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
         Canvas c = null;
         while (go) {
             try {
+                cv_thread.sleep(40);
                 try {
                     c = holder.lockCanvas(null);
                     nDraw(c);

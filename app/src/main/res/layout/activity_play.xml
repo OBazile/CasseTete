@@ -8,9 +8,14 @@
     <com.example.bazile.p8cassetete.CasseTeteView
         android:id="@+id/Cassetete"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="fill_parent" >
 
     </com.example.bazile.p8cassetete.CasseTeteView>
 
+    <TextView
+        android:id="@+id/text"
+        android:text="AZZEETRTRYT"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </FrameLayout>

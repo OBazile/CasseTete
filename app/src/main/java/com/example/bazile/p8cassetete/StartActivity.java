@@ -10,8 +10,6 @@ import android.widget.TextView;
 
 public class StartActivity extends Activity implements View.OnClickListener {
 
-
-
     Button Jouer,Aide,About;
     TextView titre;
     Typeface font,font1,font2;
@@ -42,20 +40,16 @@ public class StartActivity extends Activity implements View.OnClickListener {
             case R.id.start_play:
                 Intent intent_play = new Intent(this,PlayActivity.class);
                 startActivity(intent_play);
-
             break;
 
             case R.id.start_about :
                 Intent intent_about = new Intent(this,AboutActivity.class);
                 startActivity(intent_about);
-
-
             break;
 
             case R.id.start_aide :
                 Intent intent_aide = new Intent(this,RegleActivity.class);
                 startActivity(intent_aide);
-
             break;
 
 
