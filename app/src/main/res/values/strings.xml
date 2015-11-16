@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">P8CasseTete</string>
+    <string name="play">Jouer</string>
+    <string name="about">About</string>
+    <string name="aide">Aide</string>
+    <string name="title_activity_p8__casse_tete">p8_CasseTeteActivity</string>
+    <string name="title_activity_casse_tete">CasseTeteActivity</string>
+    <string name="title_activity_casse_tete_view">CasseTeteViewActivity</string>
+</resources>

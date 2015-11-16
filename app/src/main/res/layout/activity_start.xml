@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".StartActivity"
+    android:background="@drawable/fond_ecran">
+
+    <TextView
+        android:layout_marginTop="10pt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/start_title"
+        android:text="CASSE TETE"
+        android:gravity="center_horizontal"
+        android:textSize="35pt"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@android:color/white"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/start_play"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="157dp"
+        android:textSize="30pt"
+        android:text="Start"
+        android:textColor="@android:color/white"
+        android:background="@android:color/transparent"
+        android:onClick="onClick"/>
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/start_aide"
+        android:layout_below="@+id/start_play"
+        android:layout_marginTop="10pt"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/aide2"
+        android:textColor="@android:color/white"
+        android:text="Règle"
+        android:textSize="30pt"
+        android:background="@android:color/transparent"
+        android:onClick="onClick"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/start_about"
+        android:layout_below="@+id/start_aide"
+        android:layout_marginTop="10pt"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/about"
+        android:textColor="@android:color/white"
+        android:text="Crédit"
+        android:background="@android:color/transparent"
+        android:onClick="onClick"
+        android:textSize="30pt" />
+
+
+
+
+</RelativeLayout>
