@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -27,40 +28,44 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
     static final int    carteTileSize = 20;
     int carteCentreGauche,carteCentreHaut;
 
+
     Float Time;
     int Score = 0;
 
-    int Tab[][];
+    int [][] Tab;
     Paint  paint;
     private boolean go = true;
     private  SurfaceHolder holder;
 
 
 
-    public CasseTeteView(Context context) {
-        super(context);
+    public CasseTeteView(Context context, AttributeSet attrs) {
+        super(context, attrs);
 
         Context	= context;
         Res 		= Context.getResources();
         Fondecran = BitmapFactory.decodeResource(Res, R.drawable.fond_ecran);
         caseBlue = BitmapFactory.decodeResource(Res, R.drawable.cube);
-        casseTurquoise = BitmapFactory.decodeResource(Res,R.drawable.cube5);
+        casseTurquoise = BitmapFactory.decodeResource(Res,R.drawable.cube1);
         casseRouge = BitmapFactory.decodeResource(Res, R.drawable.cube2);
         casseJaune = BitmapFactory.decodeResource(Res, R.drawable.cube3);
         casseVide = BitmapFactory.decodeResource(Res,R.drawable.cube4);
         initparameters();
-       // cv_thread = new Thread(this);
+        //cv_thread = new Thread(this);
     }
 
 
     private void paintCarte(Canvas canvas) {
         int i,j;
-        for (i=0; i < carteWidth;i++ )
-            for(j=0; j < carteHeight;j++){
+        for (i=0; i < carteWidth; i++ )
+            for(j=0; j < carteHeight; j++){
                 switch (Tab[i][j]){
                     case 1:
-                        canvas.drawBitmap(casseVide, carteCentreGauche+ j*carteTileSize, carteCentreHaut+ i*carteTileSize, null);
+                        canvas.drawBitmap(casseRouge, carteCentreGauche+ j*carteTileSize, carteCentreHaut+ i*carteTileSize, null);
                         break;
+                    //default:
+                       // canvas.drawBitmap(casseRouge, carteCentreGauche+ j*carteTileSize,carteCentreHaut+ i*carteTileSize, null);
+                       // break;
                 }
             }
     }
@@ -90,14 +95,16 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
         paint.setStrokeWidth(3);
         paint.setTextAlign(Paint.Align.LEFT);
         Tab = new int[carteHeight][carteWidth];
-
         initialisation(carteHeight, carteWidth);
+
         carteCentreHaut = (getHeight() - carteHeight * carteTileSize) / 2;
         carteCentreGauche = (getWidth() - carteWidth * carteTileSize) / 2;
+
+        if ((cv_thread!=null) && (!cv_thread.isAlive())) {
+            cv_thread.start();
+            Log.e("-FCT-", "cv_thread.start()");
+        }
     }
-
-
-
 
 
 
@@ -108,8 +115,8 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        Log.i("-> FCT <-", "surfaceChanged "+ width +" - "+ height);
-        initparameters();
+        Log.i("-> FCT <-", "surfaceChanged " + width + " - " + height);
+        //initparameters();
     }
 
     @Override
@@ -123,11 +130,11 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
         while (go) {
             try {
                 try {
-                   // c = holder.lockCanvas(null);
+                    c = holder.lockCanvas(null);
                     nDraw(c);
                 } finally {
                     if (c != null) {
-                       // holder.unlockCanvasAndPost(c);
+                        holder.unlockCanvasAndPost(c);
                     }
                 }
             }catch(Exception e) {
