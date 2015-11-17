@@ -25,7 +25,7 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
     // taille de la carte
     static final int    carteWidth    = 10;
     static final int    carteHeight   = 10;
-    static final int    carteTileSize = 100;
+    static final int    carteTileSize = 105;
     int carteCentreGauche,carteCentreHaut;
 
 
@@ -79,10 +79,10 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
 
     }
 
-    public void initialisation ( /*int minLine,*/int maxLine, int maxCol/*int minCol*/){
+    public void initialisation ( /*int minLine,, int maxCol/*int minCol*/){
         int i,j;
-        for (i = 0; i < maxLine;i++ )
-            for (j = 0; j < maxCol; j++)
+        for (i = 0; i < carteWidth;i++ )
+            for (j = 0; j < carteHeight; j++)
                 Tab[i][j] = 1;
     }
 
@@ -98,9 +98,9 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
         paint.setStrokeWidth(3);
         paint.setTextAlign(Paint.Align.LEFT);
         Tab = new int[carteHeight][carteWidth];
-        initialisation(carteHeight, carteWidth);
+        initialisation();
 
-        carteCentreHaut = (getHeight() - carteHeight * carteTileSize) / 2;
+        carteCentreHaut = (getHeight() - carteHeight * carteTileSize) / 4;
         carteCentreGauche = (getWidth() - carteWidth * carteTileSize) / 2;
 
         if ((cv_thread!=null) && (!cv_thread.isAlive())) {
