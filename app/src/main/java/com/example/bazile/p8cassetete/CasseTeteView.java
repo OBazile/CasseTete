@@ -141,11 +141,27 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
 
         forme[nombreAléatoire][nombreAléatoire] = 2;
 
-        while(compteur < 4 ) {
+        while(compteur <= 4 ) {
 
 
             for (i = 0; i < carteWidth; i++) {
                 for (j = 0; j < carteHeight; j++) {
+
+                    if (forme[nombreAléatoire][nombreAléatoire] == 4) {
+                        if (forme[nombreAléatoire][nombreAléatoire + 1] == 1 &&
+                                forme[nombreAléatoire][nombreAléatoire + 2] == 1 &&
+                                forme[nombreAléatoire][nombreAléatoire + 3] == 1) {
+
+                            forme[nombreAléatoire][nombreAléatoire + 1] = 4;
+                            forme[nombreAléatoire][nombreAléatoire + 2] = 4;
+                            forme[nombreAléatoire][nombreAléatoire + 3] = 4;
+
+                        }else{
+                            forme[nombreAléatoire][nombreAléatoire] = compteur;
+                        }
+
+                    }
+
 
                     if (forme[nombreAléatoire][nombreAléatoire] == 3) {
                         if (forme[nombreAléatoire + 1 ][nombreAléatoire] == 1 &&

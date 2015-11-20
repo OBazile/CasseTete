@@ -1,6 +1,7 @@
 package com.example.bazile.p8cassetete;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
@@ -46,8 +47,11 @@ public class PlayActivity extends Activity {
         tempsStart.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
             public void onChronometerTick(Chronometer chronometer) {
-                if (chronometer.getText().toString().equalsIgnoreCase("00:10")) {
+                if (chronometer.getText().toString().equalsIgnoreCase("02:10")) {
+                    tempsStart.setTextColor(Color.parseColor("#F44336"));
+                }
 
+                if (chronometer.getText().toString().equalsIgnoreCase("02:40")) {
                     tempsStart.stop();
                     lose.setVisibility(View.VISIBLE);
                 }
