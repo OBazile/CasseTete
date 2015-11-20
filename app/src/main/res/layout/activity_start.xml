@@ -26,10 +26,10 @@
         android:id="@+id/start_play"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="157dp"
-        android:textSize="30pt"
+        android:layout_marginTop="170dp"
+        android:textSize="32pt"
         android:text="Start"
-        android:textColor="@android:color/white"
+        android:textColor="#FFFF8D"
         android:background="@android:color/transparent"
         android:onClick="onClick"/>
 
@@ -39,12 +39,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/start_aide"
         android:layout_below="@+id/start_play"
-        android:layout_marginTop="10pt"
+        android:layout_marginTop="15pt"
         android:layout_centerHorizontal="true"
         android:src="@drawable/aide2"
-        android:textColor="@android:color/white"
+        android:textColor="#FFFF8D"
         android:text="Règle"
-        android:textSize="30pt"
+        android:textSize="32pt"
         android:background="@android:color/transparent"
         android:onClick="onClick"/>
 
@@ -53,17 +53,14 @@
         android:layout_height="wrap_content"
         android:id="@+id/start_about"
         android:layout_below="@+id/start_aide"
-        android:layout_marginTop="10pt"
+        android:layout_marginTop="15pt"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:src="@drawable/about"
-        android:textColor="@android:color/white"
+        android:textColor="#FFFF8D"
         android:text="Crédit"
         android:background="@android:color/transparent"
         android:onClick="onClick"
-        android:textSize="30pt" />
-
-
-
+        android:textSize="32pt" />
 
 </RelativeLayout>

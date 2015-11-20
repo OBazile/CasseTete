@@ -3,19 +3,58 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:startColor="#595a96" android:endColor="#36375e" android:angle="270"
     tools:context="com.example.bazile.p8cassetete.PlayActivity">
+
+
 
     <com.example.bazile.p8cassetete.CasseTeteView
         android:id="@+id/Cassetete"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="match_parent">
 
     </com.example.bazile.p8cassetete.CasseTeteView>
 
     <TextView
-        android:id="@+id/text"
-        android:text="AZZEETRTRYT"
+        android:layout_marginTop="5dp"
+        android:id="@+id/temps"
+        android:text="Temps"
+        android:layout_marginLeft="2dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:textColor="@android:color/white"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="30pt"/>
+
+    <TextView
+
+        android:id="@+id/Lose"
+        android:text="You Lose"
+        android:layout_marginLeft="35dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_red_light"
+        android:layout_gravity="center|center_horizontal"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="40pt"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Retour"
+        android:id="@+id/playRetour"
+        android:textColor="@android:color/white"
+        android:layout_gravity="right|bottom"
+        android:textSize= "25pt"
+        android:background="@android:color/transparent" />
+
+    <Chronometer
+        android:layout_marginTop="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/chronometer"
+        android:layout_gravity="center_horizontal|top"
+        android:textColor="@android:color/white"
+        android:textSize= "25pt" />
 
 </FrameLayout>

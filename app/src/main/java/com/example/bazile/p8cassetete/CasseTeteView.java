@@ -5,36 +5,43 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.util.Random;
 import java.util.Timer;
 
 public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback, Runnable{
 
-
-    private Timer Temps;
-    Bitmap  casseVide,caseBlue,casseRouge,casseJaune,casseTurquoise,Fondecran;
+    Bitmap  casseVide,casseRouge,casseJaune,casseTurquoise,Fondecran,casseBleu,casseBlack;
     Thread  cv_thread;
     private Resources Res;
     private Context 	Context;
 
     // taille de la carte
-    static final int    carteWidth    = 10;
-    static final int    carteHeight   = 10;
+    static final int    carteWidth    = 8;
+    static final int    carteHeight   = 8;
     static final int    carteTileSize = 105;
     int carteCentreGauche,carteCentreHaut;
 
 
-    Float Time;
     int Score = 0;
+    Random r = new Random();
 
     int [][] Tab;
+    int [][] forme;
+    int nombreAléatoire;
+
+
+
     Paint  paint;
     private boolean go = true;
+    private boolean start = false;
     private  SurfaceHolder holder;
 
 
@@ -48,11 +55,13 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
         Context	= context;
         Res 		= Context.getResources();
         Fondecran = BitmapFactory.decodeResource(Res, R.drawable.fond_ecran);
-        caseBlue = BitmapFactory.decodeResource(Res, R.drawable.cube);
+        casseBleu=BitmapFactory.decodeResource(Res,R.drawable.cube);
         casseTurquoise = BitmapFactory.decodeResource(Res,R.drawable.cube1);
         casseRouge = BitmapFactory.decodeResource(Res, R.drawable.cube2);
         casseJaune = BitmapFactory.decodeResource(Res, R.drawable.cube3);
         casseVide = BitmapFactory.decodeResource(Res,R.drawable.cube4);
+        casseBlack = BitmapFactory.decodeResource(Res, R.drawable.cube5);
+
         initparameters();
         cv_thread = new Thread(this);
     }
@@ -64,28 +73,114 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
             for(j=0; j < carteHeight; j++){
                 switch (Tab[i][j]){
                     case 1:
-                        canvas.drawBitmap(casseRouge, carteCentreGauche+ j*carteTileSize, carteCentreHaut+ i*carteTileSize, null);
+                        canvas.drawBitmap(casseVide, carteCentreGauche+ j*carteTileSize, carteCentreHaut+ i*carteTileSize, null);
                         break;
-                    default:
+                    case 2:
+                        canvas.drawBitmap(casseTurquoise, carteCentreGauche+ j*carteTileSize,carteCentreHaut+ i*carteTileSize, null);
+                        break;
+                    case 3:
+                        canvas.drawBitmap(casseJaune, carteCentreGauche+ j*carteTileSize,carteCentreHaut+ i*carteTileSize, null);
+                        break;
+                    case 4 :
                         canvas.drawBitmap(casseRouge, carteCentreGauche+ j*carteTileSize,carteCentreHaut+ i*carteTileSize, null);
                         break;
                 }
             }
     }
 
+    private void paintForme(Canvas canvas) {
+        int i,j,taille =0;
+        for (i=0; i < carteWidth; i++ )
+            for(j=0; j < carteHeight; j++){
+                switch (forme[i][j]){
+
+                   /* case 1:
+                        canvas.drawBitmap(casseBleu, 0, 0, null);
+                        break;*/
+                    case 2:
+                        canvas.drawBitmap(casseTurquoise,carteCentreGauche+j*carteTileSize,carteCentreHaut+i*carteTileSize, null);
+                        break;
+                    case 3:
+                        canvas.drawBitmap(casseJaune,carteCentreGauche+j*carteTileSize,carteCentreHaut + i*carteTileSize, null);
+                        break;
+                    case 4:
+                        canvas.drawBitmap(casseRouge, carteCentreGauche+ j*carteTileSize,carteCentreHaut+ i*carteTileSize, null);
+                        break;
+                    /*default:
+                        canvas.drawBitmap(casseBlack, carteCentreGauche+ j*carteTileSize,carteCentreHaut+ i*carteTileSize, null);
+                        break;*/
+                }
+            }
+    }
+
+
     private void nDraw(Canvas canvas) {
-        canvas.drawBitmap(Fondecran,getHeight(),getWidth(),null);
+
+
+        canvas.drawBitmap(Fondecran,0,0,null);
         paintCarte(canvas);
+        paintForme(canvas);
 
     }
 
     public void initialisation ( /*int minLine,, int maxCol/*int minCol*/){
         int i,j;
-        for (i = 0; i < carteWidth;i++ )
-            for (j = 0; j < carteHeight; j++)
+        for (i = 0; i < carteWidth;i++ ) {
+            for (j = 0; j < carteHeight; j++) {
                 Tab[i][j] = 1;
+                forme[i][j] = 1;
+            }
+        }
     }
 
+    public void CreePlateforme(){
+        int i,j;
+        int compteur = 2;
+        boolean gg = true;
+        nombreAléatoire = r.nextInt(carteWidth-1);
+
+        forme[nombreAléatoire][nombreAléatoire] = 2;
+
+        while(compteur < 4 ) {
+
+
+            for (i = 0; i < carteWidth; i++) {
+                for (j = 0; j < carteHeight; j++) {
+
+                    if (forme[nombreAléatoire][nombreAléatoire] == 3) {
+                        if (forme[nombreAléatoire + 1 ][nombreAléatoire] == 1 &&
+                                forme[nombreAléatoire + 2 ][nombreAléatoire] == 1 &&
+                                        forme[nombreAléatoire + 3 ][nombreAléatoire] == 1) {
+
+                            forme[nombreAléatoire + 1 ][nombreAléatoire] = 3;
+                            forme[nombreAléatoire + 2 ][nombreAléatoire] = 3;
+
+                        }else{
+                            forme[nombreAléatoire][nombreAléatoire] = compteur;
+                        }
+
+                    }
+
+                    if (forme[nombreAléatoire][nombreAléatoire] == 2) {
+                        if (forme[nombreAléatoire + 1][nombreAléatoire] == 1 &&
+                                forme[nombreAléatoire + 1][nombreAléatoire + 1] == 1 &&
+                                forme[nombreAléatoire][nombreAléatoire + 1] == 1) {
+
+                            forme[nombreAléatoire + 1][nombreAléatoire] = 2;
+                            forme[nombreAléatoire + 1][nombreAléatoire + 1] = 2;
+                            forme[nombreAléatoire][nombreAléatoire + 1] = 2;
+
+                        }
+
+                    }
+                }
+            }
+            compteur++;
+            nombreAléatoire = r.nextInt(carteWidth - 1);
+            while(forme[nombreAléatoire][nombreAléatoire] != 1) nombreAléatoire = r.nextInt(carteWidth-1);
+            forme[nombreAléatoire][nombreAléatoire] = compteur;
+        }
+    }
 
     public void initparameters() {
         paint = new Paint();
@@ -98,9 +193,10 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
         paint.setStrokeWidth(3);
         paint.setTextAlign(Paint.Align.LEFT);
         Tab = new int[carteHeight][carteWidth];
+        forme = new int[carteHeight][carteWidth];
         initialisation();
-
-        carteCentreHaut = (getHeight() - carteHeight * carteTileSize) / 4;
+        CreePlateforme();
+        carteCentreHaut = (getHeight() - carteHeight * carteTileSize) / 2;
         carteCentreGauche = (getWidth() - carteWidth * carteTileSize) / 2;
 
         if ((cv_thread!=null) && (!cv_thread.isAlive())) {
@@ -147,6 +243,4 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
 
         }
     }
-
-
 }
