@@ -8,10 +8,14 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.DragEvent;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 import java.util.Random;
 import java.util.Timer;
@@ -24,8 +28,8 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
     private Context 	Context;
 
     // taille de la carte
-    static final int    carteWidth    = 8;
-    static final int    carteHeight   = 8;
+    static final int    carteWidth    = 5;
+    static final int    carteHeight   = 5;
     static final int    carteTileSize = 105;
     int carteCentreGauche,carteCentreHaut;
 
@@ -35,7 +39,27 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
 
     int [][] Tab;
     int [][] forme;
+
+    /** Une plateforme a besion des données suivant
+     *  Un tableau ou on connait sa taille en x et en y
+     *  Position x,y
+     *  Booléen qui verifie qu'il est toucher
+     *  Booléen qui vérifie si il est placer
+     *
+     */
+
+    int [][] Plateforme = new int[carteHeight][carteWidth];
+
+
+    int PosX=10,PosY=10;
+    int Pos1X=20+carteTileSize, Pos1Y= 200+carteTileSize;
+
+
+    boolean touch = false,touch1 = false;
+    boolean fixer = false;
+
     int nombreAléatoire;
+    int pas;
 
 
 
@@ -64,6 +88,8 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
 
         initparameters();
         cv_thread = new Thread(this);
+
+        setFocusable(true);
     }
 
 
@@ -90,37 +116,51 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
 
     private void paintForme(Canvas canvas) {
         int i,j,taille =0;
-        for (i=0; i < carteWidth; i++ )
-            for(j=0; j < carteHeight; j++){
-                switch (forme[i][j]){
+        for (i=0; i < carteWidth; i++ ) {
+            for (j = 0; j < carteHeight; j++) {
+                switch (forme[i][j]) {
 
-                   /* case 1:
-                        canvas.drawBitmap(casseBleu, 0, 0, null);
-                        break;*/
+                    case 1:
+                        canvas.drawBitmap(casseBleu, PosX + j * carteTileSize, PosY + i * carteTileSize, null);
+                        break;
                     case 2:
-                        canvas.drawBitmap(casseTurquoise,carteCentreGauche+j*carteTileSize,carteCentreHaut+i*carteTileSize, null);
+                        canvas.drawBitmap(casseTurquoise, PosX + j * carteTileSize, PosY + i * carteTileSize, null);
                         break;
                     case 3:
-                        canvas.drawBitmap(casseJaune,carteCentreGauche+j*carteTileSize,carteCentreHaut + i*carteTileSize, null);
+                        canvas.drawBitmap(casseJaune, carteCentreGauche + j * carteTileSize, carteCentreHaut + i * carteTileSize, null);
                         break;
                     case 4:
-                        canvas.drawBitmap(casseRouge, carteCentreGauche+ j*carteTileSize,carteCentreHaut+ i*carteTileSize, null);
+                        canvas.drawBitmap(casseRouge, carteCentreGauche + j * carteTileSize, carteCentreHaut + i * carteTileSize, null);
                         break;
-                    /*default:
-                        canvas.drawBitmap(casseBlack, carteCentreGauche+ j*carteTileSize,carteCentreHaut+ i*carteTileSize, null);
-                        break;*/
+
+                }
+
+
+            }
+        }
+        for (i=0; i < carteWidth; i++ ) {
+            for (j = 0; j < carteHeight; j++) {
+                switch (Plateforme[i][j]) {
+                    case 1:
+                        canvas.drawBitmap(casseBleu, Pos1X + j * carteTileSize, Pos1Y + i * carteTileSize, null);
+                        break;
+                    case 2:
+                        canvas.drawBitmap(casseTurquoise, Pos1X + j * carteTileSize, Pos1Y + i * carteTileSize, null);
+                        break;
+                    case 3:
+                        canvas.drawBitmap(casseJaune, Pos1X + j * carteTileSize, Pos1Y + i * carteTileSize, null);
+                        break;
                 }
             }
+        }
     }
 
 
     private void nDraw(Canvas canvas) {
 
-
         canvas.drawBitmap(Fondecran,0,0,null);
         paintCarte(canvas);
         paintForme(canvas);
-
     }
 
     public void initialisation ( /*int minLine,, int maxCol/*int minCol*/){
@@ -128,75 +168,34 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
         for (i = 0; i < carteWidth;i++ ) {
             for (j = 0; j < carteHeight; j++) {
                 Tab[i][j] = 1;
-                forme[i][j] = 1;
+
             }
         }
     }
 
-    public void CreePlateforme(){
-        int i,j;
-        int compteur = 2;
+    public void CreePlateforme() {
+        int i = 0, j = 0;
+        int compteur = 0;
+        int compt;
         boolean gg = true;
-        nombreAléatoire = r.nextInt(carteWidth-1);
+        //nombreAléatoire = r.nextInt(carteWidth - 1);
+        compt = 2 + r.nextInt(5 - 2);
+        nombreAléatoire = 0;
 
+        forme[nombreAléatoire + 1][nombreAléatoire] = 2;
+        forme[nombreAléatoire + 1][nombreAléatoire + 1] = 2;
+        forme[nombreAléatoire][nombreAléatoire + 1] = 2;
         forme[nombreAléatoire][nombreAléatoire] = 2;
 
-        while(compteur <= 4 ) {
-
-
-            for (i = 0; i < carteWidth; i++) {
-                for (j = 0; j < carteHeight; j++) {
-
-                    if (forme[nombreAléatoire][nombreAléatoire] == 4) {
-                        if (forme[nombreAléatoire][nombreAléatoire + 1] == 1 &&
-                                forme[nombreAléatoire][nombreAléatoire + 2] == 1 &&
-                                forme[nombreAléatoire][nombreAléatoire + 3] == 1) {
-
-                            forme[nombreAléatoire][nombreAléatoire + 1] = 4;
-                            forme[nombreAléatoire][nombreAléatoire + 2] = 4;
-                            forme[nombreAléatoire][nombreAléatoire + 3] = 4;
-
-                        }else{
-                            forme[nombreAléatoire][nombreAléatoire] = compteur;
-                        }
-
-                    }
-
-
-                    if (forme[nombreAléatoire][nombreAléatoire] == 3) {
-                        if (forme[nombreAléatoire + 1 ][nombreAléatoire] == 1 &&
-                                forme[nombreAléatoire + 2 ][nombreAléatoire] == 1 &&
-                                        forme[nombreAléatoire + 3 ][nombreAléatoire] == 1) {
-
-                            forme[nombreAléatoire + 1 ][nombreAléatoire] = 3;
-                            forme[nombreAléatoire + 2 ][nombreAléatoire] = 3;
-
-                        }else{
-                            forme[nombreAléatoire][nombreAléatoire] = compteur;
-                        }
-
-                    }
-
-                    if (forme[nombreAléatoire][nombreAléatoire] == 2) {
-                        if (forme[nombreAléatoire + 1][nombreAléatoire] == 1 &&
-                                forme[nombreAléatoire + 1][nombreAléatoire + 1] == 1 &&
-                                forme[nombreAléatoire][nombreAléatoire + 1] == 1) {
-
-                            forme[nombreAléatoire + 1][nombreAléatoire] = 2;
-                            forme[nombreAléatoire + 1][nombreAléatoire + 1] = 2;
-                            forme[nombreAléatoire][nombreAléatoire + 1] = 2;
-
-                        }
-
-                    }
-                }
-            }
-            compteur++;
-            nombreAléatoire = r.nextInt(carteWidth - 1);
-            while(forme[nombreAléatoire][nombreAléatoire] != 1) nombreAléatoire = r.nextInt(carteWidth-1);
-            forme[nombreAléatoire][nombreAléatoire] = compteur;
-        }
+        Plateforme[nombreAléatoire][nombreAléatoire] = 3;
+        Plateforme[nombreAléatoire + 1][nombreAléatoire] = 3;
+        Plateforme[nombreAléatoire + 2][nombreAléatoire] = 3;
+        Plateforme[nombreAléatoire + 3][nombreAléatoire] = 3;
+        Plateforme[nombreAléatoire][nombreAléatoire + 1] = 3;
+        Plateforme[nombreAléatoire][nombreAléatoire +2] = 3;
+        Plateforme [nombreAléatoire][nombreAléatoire +3] = 3;
     }
+
 
     public void initparameters() {
         paint = new Paint();
@@ -210,6 +209,7 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
         paint.setTextAlign(Paint.Align.LEFT);
         Tab = new int[carteHeight][carteWidth];
         forme = new int[carteHeight][carteWidth];
+        Plateforme = new int[carteHeight][carteWidth];
         initialisation();
         CreePlateforme();
         carteCentreHaut = (getHeight() - carteHeight * carteTileSize) / 2;
@@ -220,8 +220,6 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
             Log.e("-FCT-", "cv_thread.start()");
         }
     }
-
-
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
@@ -238,6 +236,7 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
     public void surfaceDestroyed(SurfaceHolder holder) {
         Log.i("-> FCT <-", "surfaceCreated");
     }
+
 
     @Override
     public void run() {
@@ -259,4 +258,130 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
 
         }
     }
+
+    public boolean onTouchEvent(MotionEvent event) {
+        int i,j;
+        int positionX = (int) event.getX();
+        int positionY = (int) event.getY();
+        int calx = carteCentreHaut;
+        int caly = carteCentreGauche;
+        int calY = Pos1Y+carteTileSize;
+        int calX = Pos1X+carteTileSize;
+
+
+        switch (event.getAction()){
+
+            case   MotionEvent.ACTION_DOWN:
+                if(!fixer) {
+                    if (positionX >= PosX && positionX < PosX + 2 * carteTileSize && PosY <= positionY && positionY < PosY + 2 * carteTileSize)
+                        touch = true;
+                }
+
+                for(i=0;i<5;i++) {
+                    for (j = 0; j < 5; j++) {
+                        if(!fixer) {
+                            if (positionX >= Pos1X && positionX < Pos1X + i * carteTileSize && Pos1Y <= positionY && positionY < Pos1Y + j * carteTileSize)
+                                touch1 = true;
+                        }
+
+                    }
+                }
+
+                Log.d("So","Mince");
+                if (InTheBox(Pos1X, Pos1Y)) {
+                    Log.d("So","good");
+
+                    fixer = true;
+
+                }
+
+                if (InTheBox(PosX, PosY)) {
+                    Log.d("So","good");
+
+                    fixer = true;
+
+                }
+
+                break;
+
+
+            case MotionEvent.ACTION_MOVE:
+
+                if(touch){
+                    PosX  = positionX;
+                    PosY = positionY;
+                }
+                if (touch1){
+                    Pos1X = positionX;
+                    Pos1Y = positionY;
+                }
+
+
+                Log.d("So","Mince");
+                if (InTheBox(Pos1X, Pos1Y)) {
+                    Log.d("So","good");
+
+                    fixer = true;
+
+                }
+
+                if (InTheBox(PosX, PosY)) {
+                    Log.d("So","good");
+
+                    fixer = true;
+
+                }
+                break;
+
+            case MotionEvent.ACTION_UP:
+                touch = false;
+                touch1 = false;
+                //Log.d("posB", "bool:" + touch);
+                break;
+        }
+
+        invalidate();
+        return true;
+    }
+
+    public boolean InBox(int x ,int y){
+        int tempX = x,tempY =y;
+        if(x > carteCentreGauche
+                && x <  carteCentreGauche+ (carteWidth-1)*carteTileSize
+                && y >  carteCentreHaut
+                && y <  carteCentreHaut+ (carteWidth-1)*carteTileSize ) {
+
+
+
+
+            return true;
+        }
+        return false;
+    }
+
+    public boolean InTheBox(int x, int y){
+        int i,j;
+
+        for(i=0;i<carteWidth;i++)
+            for(j=0;j<carteHeight;i++){
+                if(x ==  carteCentreGauche+ j*carteTileSize ) {
+                    x = carteCentreGauche + j* carteTileSize;
+
+
+                    return true;
+                }
+                if( y  ==  carteCentreHaut + i *carteTileSize) {
+                    y = carteCentreHaut + i * carteTileSize;
+                    return true;
+                }
+
+
+                else return false;
+
+            }
+
+        return false;
+    }
+
+
 }
