@@ -39,6 +39,7 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
 
     int [][] Tab;
     int [][] forme;
+    int Ifixe,Jfixe;
 
     /** Une plateforme a besion des données suivant
      *  Un tableau ou on connait sa taille en x et en y
@@ -51,7 +52,7 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
     int [][] Plateforme = new int[carteHeight][carteWidth];
 
 
-    int PosX=10,PosY=10;
+    int PosX=100,PosY=100;
     int Pos1X=20+carteTileSize, Pos1Y= 200+carteTileSize;
 
 
@@ -100,15 +101,7 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
                 switch (Tab[i][j]){
                     case 1:
                         canvas.drawBitmap(casseVide, carteCentreGauche+ j*carteTileSize, carteCentreHaut+ i*carteTileSize, null);
-                        break;
-                    case 2:
-                        canvas.drawBitmap(casseTurquoise, carteCentreGauche+ j*carteTileSize,carteCentreHaut+ i*carteTileSize, null);
-                        break;
-                    case 3:
-                        canvas.drawBitmap(casseJaune, carteCentreGauche+ j*carteTileSize,carteCentreHaut+ i*carteTileSize, null);
-                        break;
-                    case 4 :
-                        canvas.drawBitmap(casseRouge, carteCentreGauche+ j*carteTileSize,carteCentreHaut+ i*carteTileSize, null);
+
                         break;
                 }
             }
@@ -132,12 +125,13 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
                     case 4:
                         canvas.drawBitmap(casseRouge, carteCentreGauche + j * carteTileSize, carteCentreHaut + i * carteTileSize, null);
                         break;
-
                 }
 
 
             }
         }
+
+
         for (i=0; i < carteWidth; i++ ) {
             for (j = 0; j < carteHeight; j++) {
                 switch (Plateforme[i][j]) {
@@ -214,7 +208,8 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
         CreePlateforme();
         carteCentreHaut = (getHeight() - carteHeight * carteTileSize) / 2;
         carteCentreGauche = (getWidth() - carteWidth * carteTileSize) / 2;
-
+        PosX = carteCentreGauche + 3 * carteTileSize;
+        PosY = carteCentreGauche + 4 * carteTileSize;
         if ((cv_thread!=null) && (!cv_thread.isAlive())) {
             cv_thread.start();
             Log.e("-FCT-", "cv_thread.start()");
@@ -230,6 +225,7 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         Log.i("-> FCT <-", "surfaceChanged " + width + " - " + height);
         initparameters();
+        afficher();
     }
 
     @Override
@@ -259,14 +255,21 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
+    public void afficher(){
+        int i,j;
+
+        for(i=0;i<carteWidth;i++) {
+            for (j = 0; j < carteHeight; j++)
+                System.out.print(Tab[i][j]);
+            System.out.println("");
+        }
+    }
+
     public boolean onTouchEvent(MotionEvent event) {
         int i,j;
         int positionX = (int) event.getX();
         int positionY = (int) event.getY();
-        int calx = carteCentreHaut;
-        int caly = carteCentreGauche;
-        int calY = Pos1Y+carteTileSize;
-        int calX = Pos1X+carteTileSize;
+
 
 
         switch (event.getAction()){
@@ -282,24 +285,10 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
                         if(!fixer) {
                             if (positionX >= Pos1X && positionX < Pos1X + i * carteTileSize && Pos1Y <= positionY && positionY < Pos1Y + j * carteTileSize)
                                 touch1 = true;
+
                         }
 
                     }
-                }
-
-                Log.d("So","Mince");
-                if (InTheBox(Pos1X, Pos1Y)) {
-                    Log.d("So","good");
-
-                    fixer = true;
-
-                }
-
-                if (InTheBox(PosX, PosY)) {
-                    Log.d("So","good");
-
-                    fixer = true;
-
                 }
 
                 break;
@@ -317,25 +306,25 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
                 }
 
 
-                Log.d("So","Mince");
-                if (InTheBox(Pos1X, Pos1Y)) {
-                    Log.d("So","good");
+               if (InBox(Pos1X, Pos1Y)) {
+                    /**  force à poser sur la case 1-1
+                     * Il l faut trouver le i et le j du grand tableau */
 
-                    fixer = true;
 
+                   Log.d("Dans", "boite");
+                   Pos1X=carteCentreGauche +GetValue(Ifixe) * carteTileSize;
+                   Pos1Y= carteCentreHaut + GetValue(Jfixe) * carteTileSize;
+
+                  // fixer = true;
                 }
 
-                if (InTheBox(PosX, PosY)) {
-                    Log.d("So","good");
 
-                    fixer = true;
-
-                }
                 break;
 
             case MotionEvent.ACTION_UP:
                 touch = false;
                 touch1 = false;
+
                 //Log.d("posB", "bool:" + touch);
                 break;
         }
@@ -345,43 +334,43 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
     }
 
     public boolean InBox(int x ,int y){
-        int tempX = x,tempY =y;
-        if(x > carteCentreGauche
-                && x <  carteCentreGauche+ (carteWidth-1)*carteTileSize
-                && y >  carteCentreHaut
-                && y <  carteCentreHaut+ (carteWidth-1)*carteTileSize ) {
+        int i,j;
 
+         for(i=0;i<carteHeight;i++)  /* while(i < carteHeight)*/ {
+                for(j=0;j<carteWidth;j++) {
+                    //Log.d("Ok", " " + j);
+                if ( x > carteCentreGauche - carteTileSize
+                        && x <= carteCentreGauche + i * carteTileSize && y > carteCentreHaut -carteTileSize
+                        && y <= carteCentreHaut + j * carteTileSize) {
 
+                    Log.d("I", " " + i);
+                    Log.d("J", " " + j);
+                    SetValue(i,j);
 
+                    return true;
+                }
+               else continue;
+            }
 
-            return true;
         }
         return false;
     }
 
-    public boolean InTheBox(int x, int y){
-        int i,j;
-
-        for(i=0;i<carteWidth;i++)
-            for(j=0;j<carteHeight;i++){
-                if(x ==  carteCentreGauche+ j*carteTileSize ) {
-                    x = carteCentreGauche + j* carteTileSize;
-
-
-                    return true;
-                }
-                if( y  ==  carteCentreHaut + i *carteTileSize) {
-                    y = carteCentreHaut + i * carteTileSize;
-                    return true;
-                }
-
-
-                else return false;
-
-            }
-
-        return false;
+    public int GetValue(int x) {
+        return x;
     }
+
+    public void SetValue(int x,int y){
+        this.Ifixe = x;
+        this.Jfixe = y;
+    }
+
+
+
+
+
+
+
 
 
 }
