@@ -37,9 +37,6 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
     int Score = 0;
     Random r = new Random();
 
-    int [][] Tab;
-    int [][] forme;
-    int Ifixe,Jfixe;
 
     /** Une plateforme a besion des données suivant
      *  Un tableau ou on connait sa taille en x et en y
@@ -49,14 +46,21 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
      *
      */
 
-    int [][] Plateforme = new int[carteHeight][carteWidth];
+/** Tableau    **/
+    int [][] Tab; /* Bloc principale */
+    int [][] forme;  /* bloc turquoise */
+    int [][] Plateforme = new int[carteHeight][carteWidth];  /* bloc jaune */
+    int [][] petitL = new int[carteHeight][carteWidth];  /* bloc bleu */
+    int [][] grandL = new int[carteHeight][carteWidth];  /* bloc rouge */
+    int Ifixe,Jfixe; // global
+
+    int PosX=100,PosY=100; // position turquoise
+    int Pos1X=20+carteTileSize, Pos1Y= 200+carteTileSize; // position jaune
+    int Pos2X=300, Pos2Y= 100;  // position bleu
+    int Pos3X=800, Pos3Y= 300;  // position rouge
 
 
-    int PosX=100,PosY=100;
-    int Pos1X=20+carteTileSize, Pos1Y= 200+carteTileSize;
-
-
-    boolean touch = false,touch1 = false;
+    boolean touch = false,touch1 = false,touch2 = false,touch3 = false;;
     boolean fixer = false;
 
     int nombreAléatoire;
@@ -101,7 +105,14 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
                 switch (Tab[i][j]){
                     case 1:
                         canvas.drawBitmap(casseVide, carteCentreGauche+ j*carteTileSize, carteCentreHaut+ i*carteTileSize, null);
+                        break;
 
+                    case 2:
+                        canvas.drawBitmap(casseVide, carteCentreGauche+ j*carteTileSize, carteCentreHaut+ i*carteTileSize, null);
+                        break;
+
+                    case 3:
+                        canvas.drawBitmap(casseVide, carteCentreGauche+ j*carteTileSize, carteCentreHaut+ i*carteTileSize, null);
                         break;
                 }
             }
@@ -131,6 +142,27 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
             }
         }
 
+        for (i=0; i < carteWidth; i++ ) {
+            for (j = 0; j < carteHeight; j++) {
+                switch (grandL[i][j]) {
+                    case 4:
+                        canvas.drawBitmap(casseBleu, Pos3X + j * carteTileSize, Pos3Y + i * carteTileSize, null);
+                        break;
+
+                }
+            }
+        }
+
+        for (i=0; i < carteWidth; i++ ) {
+            for (j = 0; j < carteHeight; j++) {
+                switch (petitL[i][j]) {
+                    case 5:
+                        canvas.drawBitmap(casseRouge, Pos2X + j * carteTileSize, Pos2Y + i * carteTileSize, null);
+                        break;
+
+                }
+            }
+        }
 
         for (i=0; i < carteWidth; i++ ) {
             for (j = 0; j < carteHeight; j++) {
@@ -153,6 +185,7 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
     private void nDraw(Canvas canvas) {
 
         canvas.drawBitmap(Fondecran,0,0,null);
+
         paintCarte(canvas);
         paintForme(canvas);
     }
@@ -168,7 +201,8 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
     }
 
     public void CreePlateforme() {
-        int i = 0, j = 0;
+        int i = 0, j = 0,Case=4;
+
         int compteur = 0;
         int compt;
         boolean gg = true;
@@ -180,6 +214,22 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
         forme[nombreAléatoire + 1][nombreAléatoire + 1] = 2;
         forme[nombreAléatoire][nombreAléatoire + 1] = 2;
         forme[nombreAléatoire][nombreAléatoire] = 2;
+
+        grandL[Case][Case] = 4;
+        grandL[Case][1] = 4;
+        grandL[Case][2] = 4;
+        grandL[Case][3] = 4;
+        grandL[Case][0] = 4;
+        grandL[3][Case] = 4;
+        grandL[2][Case] = 4;
+        grandL[1][Case] = 4;
+        grandL[0][Case] = 4;
+
+        petitL[3][3] = 5;
+        petitL[3][1] = 5;
+        petitL[3][2] = 5;
+        petitL[2][3] = 5;
+        petitL[1][3] = 5;
 
         Plateforme[nombreAléatoire][nombreAléatoire] = 3;
         Plateforme[nombreAléatoire + 1][nombreAléatoire] = 3;
@@ -270,8 +320,6 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
         int positionX = (int) event.getX();
         int positionY = (int) event.getY();
 
-
-
         switch (event.getAction()){
 
             case   MotionEvent.ACTION_DOWN:
@@ -291,41 +339,127 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
                     }
                 }
 
+
+                for(i=3;i>=0;i--) {
+                    for (j = 3; j >= 0; j--) {
+                        if(!fixer) {
+                            if (positionX >= Pos2X && positionX < Pos2X + i * carteTileSize && Pos2Y <= positionY && positionY < Pos2Y + j * carteTileSize)
+                                touch2 = true;
+
+                        }
+
+                    }
+                }
+
+                for(i=4;i>=0;i--) {
+                    for (j = 4; j >= 0; j--) {
+                        if(!fixer) {
+                            if (positionX >= Pos3X && positionX < Pos3X + i * carteTileSize && Pos3Y <= positionY && positionY < Pos3Y + j * carteTileSize)
+                                touch3 = true;
+                        }
+                    }
+                }
+
                 break;
 
 
             case MotionEvent.ACTION_MOVE:
 
+
                 if(touch){
+                    raseTable(forme,GetValue(Jfixe),GetValue(Ifixe),2,2,2);
                     PosX  = positionX;
                     PosY = positionY;
                 }
+
                 if (touch1){
+                    raseTable(Plateforme,GetValue(Jfixe),GetValue(Ifixe),4,4,3);
                     Pos1X = positionX;
                     Pos1Y = positionY;
                 }
 
+                if (touch2){
+                   // raseTable(Plateforme,GetValue(Jfixe),GetValue(Ifixe),4,4,3);
+                    Pos2X = positionX;
+                    Pos2Y = positionY;
+                }
+
+                if (touch3){
+                    //raseTable(Plateforme,GetValue(Jfixe),GetValue(Ifixe),4,4,3);
+                    Pos3X = positionX;
+                    Pos3Y = positionY;
+                }
 
                if (InBox(Pos1X, Pos1Y)) {
                     /**  force à poser sur la case 1-1
                      * Il l faut trouver le i et le j du grand tableau */
 
-
                    Log.d("Dans", "boite");
+                   Log.d("I2", " " + +GetValue(Ifixe));
+                   Log.d("J2", " " + +GetValue(Ifixe));
+                   restart();
                    Pos1X=carteCentreGauche +GetValue(Ifixe) * carteTileSize;
                    Pos1Y= carteCentreHaut + GetValue(Jfixe) * carteTileSize;
 
-                  // fixer = true;
+                   updateTable(Plateforme,GetValue(Jfixe),GetValue(Ifixe),4,4,3);
+
                 }
 
+                if (InBox(PosX, PosY)) {
+                    /**  force à poser sur la case 1-1
+                     * Il l faut trouver le i et le j du grand tableau*/
+
+
+                    PosX=carteCentreGauche +GetValue(Ifixe) * carteTileSize;
+                    PosY= carteCentreHaut + GetValue(Jfixe) * carteTileSize;
+
+                    Log.d("Piece Turquoise", "in box");
+
+                    //restart();
+                    updateTable(forme,GetValue(Jfixe),GetValue(Ifixe),2,2,2);
+                }
+
+                if (InBox(Pos2X, Pos2Y)){
+                /**  force à poser sur la case 1-1
+                 * Il l faut trouver le i et le j du grand tableau*/
+
+
+                Pos2X=carteCentreGauche +GetValue(Ifixe) * carteTileSize;
+                Pos2Y= carteCentreHaut + GetValue(Jfixe) * carteTileSize;
+
+                Log.d("I3", " " + +GetValue(Ifixe));
+                Log.d("J3", " " + +GetValue(Ifixe));
+                Log.d("Piece rouge", "in box");
+
+                //restart();
+                //updateTable(forme,GetValue(Jfixe),GetValue(Ifixe),2,2,2);
+                }
+
+                if (InBox(Pos3X, Pos3Y)) {
+                    /**  force à poser sur la case 1-1
+                     * Il l faut trouver le i et le j du grand tableau*/
+
+
+                    Pos3X=carteCentreGauche +GetValue(Ifixe) * carteTileSize;
+                    Pos3Y= carteCentreHaut + GetValue(Jfixe) * carteTileSize;
+
+                    Log.d("I3", " " + +GetValue(Ifixe));
+                    Log.d("J3", " " + +GetValue(Ifixe));
+                    Log.d("Piece rouge", "in box");
+
+                    //restart();
+                    //updateTable(forme,GetValue(Jfixe),GetValue(Ifixe),2,2,2);
+                }
 
                 break;
 
             case MotionEvent.ACTION_UP:
                 touch = false;
                 touch1 = false;
+                touch2 = false;
+                touch3 = false;
 
-                //Log.d("posB", "bool:" + touch);
+                afficher();
                 break;
         }
 
@@ -336,15 +470,15 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
     public boolean InBox(int x ,int y){
         int i,j;
 
-         for(i=0;i<carteHeight;i++)  /* while(i < carteHeight)*/ {
+         for(i=0;i<carteHeight;i++){
                 for(j=0;j<carteWidth;j++) {
-                    //Log.d("Ok", " " + j);
                 if ( x > carteCentreGauche - carteTileSize
                         && x <= carteCentreGauche + i * carteTileSize && y > carteCentreHaut -carteTileSize
                         && y <= carteCentreHaut + j * carteTileSize) {
 
                     Log.d("I", " " + i);
                     Log.d("J", " " + j);
+
                     SetValue(i,j);
 
                     return true;
@@ -356,21 +490,78 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
         return false;
     }
 
+    public boolean InBox2(int x ,int y){
+        int i,j;
+
+        for(i=0;i<carteHeight;i++){
+            for(j=0;j<carteWidth;j++) {
+                if ( x > carteCentreGauche
+                        && x <= carteCentreGauche + i * carteTileSize && y > carteCentreHaut
+                        && y <= carteCentreHaut + j * carteTileSize) {
+
+                    Log.d("I", " " + i);
+                    Log.d("J", " " + j);
+
+                    SetValue(i,j);
+
+                    return true;
+                }
+                else continue;
+            }
+
+        }
+        return false;
+    }
+
+    public void updateTable(int temp[][],int x,int y,int tailleX,int tailleY,int id){
+        int i,j;
+
+         if(x >= 0 && x <= carteHeight-tailleX && y >= 0 && y <= carteWidth-tailleY) {
+             for (i = x; i < tailleX+x; i++) {
+                 for (j = y; j < tailleY+y; j++) {
+                    if(temp[i-x][j-y] == id)
+                     Tab[i][j]=temp[i-x][j-y];
+
+                 }
+             }
+         }else{
+             Log.d("L :","Hors limite");
+
+         }
+    }
+
+    public void raseTable(int temp[][],int x,int y,int tailleX,int tailleY,int id){
+        int i,j;
+
+        if(x >= 0 && x <= carteHeight-tailleX && y >= 0 && y <= carteWidth-tailleY) {
+            for (i = x; i < tailleX+x; i++) {
+                for (j = y; j < tailleY+y; j++) {
+                    if(temp[i-x][j-y] == id)
+                        Tab[i][j]=1;
+
+                }
+            }
+        }else{
+            Log.d("L :","Hors limite");
+
+        }
+
+    }
+
     public int GetValue(int x) {
         return x;
+    }
+
+    public void restart(){
+        int i,j;
+        for (i=0; i < carteHeight; i++)
+            for (j=0; j < carteWidth; j++)
+                Tab[i][j]=1;
+
     }
 
     public void SetValue(int x,int y){
         this.Ifixe = x;
         this.Jfixe = y;
     }
-
-
-
-
-
-
-
-
-
 }
