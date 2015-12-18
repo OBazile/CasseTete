@@ -45,17 +45,27 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
      *  Position x,y
      *  Booléen qui verifie qu'il est toucher
      *  Booléen qui vérifie si il est placer
+     *  
+     *  exemple 5 pièces 
+     *          5 dimension differentes
+     *          5 Position x et y differentes
+     *          5 boolean touch pour permette à objet de déplacer
+     *          5 boolean fixer pour signaler qu'il est fixer
+     *          Des casse differents à chaque briques c'est essentiel
      *
-     */
+     *          RAPPEL IL FAUT QUE LES TABLEAUX DE BLOC SOIT FORMER 0 PARTIE DE 0 en LINE et 0 COLONNE
+     */         
 
 /** Tableau    **/
     int [][] Tab; /* Bloc principale */
-    int [][] forme;  /* bloc turquoise */
-    int [][] Plateforme = new int[carteHeight][carteWidth];  /* bloc jaune */
-    int [][] petitL = new int[carteHeight][carteWidth];  /* bloc rouge */
-    int [][] grandL = new int[carteHeight][carteWidth];  /* bloc bleu */
-    int [][] piece = new int[carteHeight][carteWidth];  /* bloc black */
-    int Ifixe,Jfixe; // global
+    int [][] Bloc1;  /* bloc turquoise */
+    int [][] Bloc2 = new int[carteHeight][carteWidth];  /* bloc jaune */
+    int [][] Bloc3 = new int[carteHeight][carteWidth];  /* bloc rouge */
+    int [][] Bloc4 = new int[carteHeight][carteWidth];  /* bloc bleu */
+    int [][] Bloc5 = new int[carteHeight][carteWidth];  /* bloc black */
+
+    /** Variable global qui va récuperer les position i et j selon le drop     **/
+    int finalPostion_x,finalPosition_y; // global
 
     /** Position   **/
     int PosX=100,PosY=100; // position turquoise
@@ -78,18 +88,13 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
             fixer4=false,
             fixer=false;
 
-    int nombreAléatoire;
-    int pas;
-
-
-
+    /** Dessin    **/
     Paint  paint;
-    private boolean go = true;
-    private boolean start = false;
+    private boolean go = true; // Pour le draw
     private  SurfaceHolder holder;
 
 
-
+    /** Fonction pricipale    **/
     public CasseTeteView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -113,7 +118,7 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
         setFocusable(true);
     }
 
-
+    /** Dessin du bloque ou on doit placer les platefomes    **/
     private void paintCarte(Canvas canvas) {
         int i,j;
         for (i=0; i < carteWidth; i++ )
@@ -140,30 +145,33 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
                 }
             }
     }
+
+    /** Dessin de la victor **/
     private void paintWin(Canvas canvas){
 
         canvas.drawBitmap(win,200,200,null);
     }
 
+    /** Dessin des briques  en mode statique non par un tableau aléatoires      **/
     private void paintForme(Canvas canvas) {
         int i,j,taille =0;
+
+        /** Dessin brique 1 en mode statique     **/
         for (i=0; i < carteWidth; i++ ) {
             for (j = 0; j < carteHeight; j++) {
-                switch (forme[i][j]) {
+                switch (Bloc1[i][j]) {
                     case 2:
                         canvas.drawBitmap(casseTurquoise, PosX + j * carteTileSize, PosY + i * carteTileSize, null);
                         break;
 
                 }
-
-
             }
         }
 
-
+        /** Dessin bloc 2 en mode statique     **/
         for (i=0; i < carteWidth; i++ ) {
             for (j = 0; j < carteHeight; j++) {
-                switch (Plateforme[i][j]) {
+                switch (Bloc2[i][j]) {
 
                     case 3:
                         canvas.drawBitmap(casseJaune, Pos1X + j * carteTileSize, Pos1Y + i * carteTileSize, null);
@@ -172,9 +180,10 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
             }
         }
 
+        /** Dessin bloc 3 en mode statique     **/
         for (i=0; i < carteWidth; i++ ) {
             for (j = 0; j < carteHeight; j++) {
-                switch (petitL[i][j]) {
+                switch (Bloc3[i][j]) {
                     case 4:
                         canvas.drawBitmap(casseRouge, Pos2X + j * carteTileSize, Pos2Y + i * carteTileSize, null);
                         break;
@@ -183,9 +192,10 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
             }
         }
 
+        /** Dessin bloc 4 en mode statique     **/
         for (i=0; i < carteWidth; i++ ) {
             for (j = 0; j < carteHeight; j++) {
-                switch (grandL[i][j]) {
+                switch (Bloc4[i][j]) {
                     case 5:
                         canvas.drawBitmap(casseBleu, Pos3X + j * carteTileSize, Pos3Y + i * carteTileSize, null);
                         break;
@@ -194,9 +204,10 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
             }
         }
 
+        /** Dessin bloc 5 en mode statique     **/
         for (i=0; i < carteWidth; i++ ) {
             for (j = 0; j < carteHeight; j++) {
-                switch (piece[i][j]) {
+                switch (Bloc5[i][j]) {
                     case 6:
                         canvas.drawBitmap(casseBlack, Pos4X + j * carteTileSize, Pos4Y + i * carteTileSize, null);
                         break;
@@ -221,7 +232,7 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
-    public void initialisation ( /*int minLine,, int maxCol/*int minCol*/){
+    public void initialisation ( /* int line, int colonne */){
         int i,j;
         for (i = 0; i < carteWidth;i++ ) {
             for (j = 0; j < carteHeight; j++) {
@@ -231,40 +242,39 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
+    //Gereration de brique statique
     public void CreePlateforme() {
 
-        nombreAléatoire = 0;
-
-        forme[nombreAléatoire + 1][nombreAléatoire] = 2;
-        forme[nombreAléatoire + 1][nombreAléatoire + 1] = 2;
-        forme[nombreAléatoire][nombreAléatoire + 1] = 2;
-        forme[nombreAléatoire][nombreAléatoire] = 2;
+        Bloc1[1][0] = 2;
+        Bloc1[1][1] = 2;
+        Bloc1[0][1] = 2;
+        Bloc1[0][0] = 2;
 
 
-        Plateforme[nombreAléatoire][nombreAléatoire] = 3;
-        Plateforme[nombreAléatoire + 1][nombreAléatoire] = 3;
-        Plateforme[nombreAléatoire + 2][nombreAléatoire] = 3;
-        Plateforme[nombreAléatoire + 3][nombreAléatoire] = 3;
-        Plateforme[nombreAléatoire][nombreAléatoire + 1] = 3;
-        Plateforme[nombreAléatoire][nombreAléatoire +2] = 3;
-        Plateforme [nombreAléatoire][nombreAléatoire +3] = 3;
+        Bloc2[0][0] = 3;
+        Bloc2[1][0] = 3;
+        Bloc2[2][0] = 3;
+        Bloc2[3][0] = 3;
+        Bloc2[0][1] = 3;
+        Bloc2[0][2] = 3;
+        Bloc2 [0][3] = 3;
 
-        petitL[0][0] = 4;
-        petitL[0][1] = 4;
-        petitL[0][2] = 4;
+        Bloc3[0][0] = 4;
+        Bloc3[0][1] = 4;
+        Bloc3[0][2] = 4;
 
-        grandL[0][0] = 5;
-        grandL[0][1] = 5;
-        grandL[0][2] = 5;
-        grandL[0][3] = 5;
-        grandL[0][4] = 5;
+        Bloc4[0][0] = 5;
+        Bloc4[0][1] = 5;
+        Bloc4[0][2] = 5;
+        Bloc4[0][3] = 5;
+        Bloc4[0][4] = 5;
 
-        piece[1][0] = 6;
-        piece[2][0] = 6;
-        piece[0][1] = 6;
-        piece[1][1] = 6;
-        piece[2][1] = 6;
-        piece[3][1] = 6;
+        Bloc5[1][0] = 6;
+        Bloc5[2][0] = 6;
+        Bloc5[0][1] = 6;
+        Bloc5[1][1] = 6;
+        Bloc5[2][1] = 6;
+        Bloc5[3][1] = 6;
     }
 
 
@@ -279,8 +289,8 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
         paint.setStrokeWidth(3);
         paint.setTextAlign(Paint.Align.LEFT);
         Tab = new int[carteHeight][carteWidth];
-        forme = new int[carteHeight][carteWidth];
-        Plateforme = new int[carteHeight][carteWidth];
+        Bloc1 = new int[carteHeight][carteWidth];
+        Bloc2 = new int[carteHeight][carteWidth];
         initialisation();
         CreePlateforme();
         carteCentreHaut = (getHeight() - carteHeight * carteTileSize) / 2;
@@ -332,15 +342,7 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
-    public void afficher(){
-        int i,j;
 
-        for(i=0;i<carteWidth;i++) {
-            for (j = 0; j < carteHeight; j++)
-                System.out.print(Tab[i][j]);
-            System.out.println("");
-        }
-    }
 
     public boolean onTouchEvent(MotionEvent event) {
         int i,j;
@@ -435,10 +437,10 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
 
                     Log.d("Piece Turquoise", "in box" + nbPiece);
 
-                    PosX=carteCentreGauche +GetValue(Ifixe) * carteTileSize;
-                    PosY= carteCentreHaut + GetValue(Jfixe) * carteTileSize;
+                    PosX=carteCentreGauche +GetValue(finalPostion_x) * carteTileSize;
+                    PosY= carteCentreHaut + GetValue(finalPosition_y) * carteTileSize;
                    // raseTable(forme,GetValue(Jfixe),GetValue(Ifixe),2,2,2); // efface
-                    updateTable(forme,GetValue(Jfixe),GetValue(Ifixe),2,2,2);
+                    updateTable(Bloc1,GetValue(finalPosition_y),GetValue(finalPostion_x),2,2,2);
                     fixer1 = true;
 
                 }else fixer1 = false;
@@ -452,9 +454,9 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
                    Log.d("Piece jaune", "in box");
 
 
-                   Pos1X=carteCentreGauche +GetValue(Ifixe) * carteTileSize;
-                   Pos1Y= carteCentreHaut + GetValue(Jfixe) * carteTileSize;
-                   updateTable(Plateforme,GetValue(Jfixe),GetValue(Ifixe),4,4,3);
+                   Pos1X=carteCentreGauche +GetValue(finalPostion_x) * carteTileSize;
+                   Pos1Y= carteCentreHaut + GetValue(finalPosition_y) * carteTileSize;
+                   updateTable(Bloc2,GetValue(finalPosition_y),GetValue(finalPostion_x),4,4,3);
                     fixer2 =true;
                 }else{
                    fixer2 = false;
@@ -465,11 +467,11 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
                 /**  force à poser sur la case 1-1
                  * Il l faut trouver le i et le j du grand tableau*/
 
-                Pos2X=carteCentreGauche +GetValue(Ifixe) * carteTileSize;
-                Pos2Y= carteCentreHaut + GetValue(Jfixe) * carteTileSize;
+                Pos2X=carteCentreGauche +GetValue(finalPostion_x) * carteTileSize;
+                Pos2Y= carteCentreHaut + GetValue(finalPosition_y) * carteTileSize;
 
                 Log.d("Piece rouge", "in box");
-                    updateTable(petitL, GetValue(Jfixe), GetValue(Ifixe), 1, 3, 4);
+                    updateTable(Bloc3, GetValue(finalPosition_y), GetValue(finalPostion_x), 1, 3, 4);
                     fixer3 =true;
                 }else fixer3 = false;
 
@@ -477,12 +479,12 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
                     /**  force à poser sur la case 1-1
                      * Il l faut trouver le i et le j du grand tableau*/
 
-                    Pos3X=carteCentreGauche +GetValue(Ifixe) * carteTileSize;
-                    Pos3Y= carteCentreHaut + GetValue(Jfixe) * carteTileSize;
+                    Pos3X=carteCentreGauche +GetValue(finalPostion_x) * carteTileSize;
+                    Pos3Y= carteCentreHaut + GetValue(finalPosition_y) * carteTileSize;
                     //Log.d("I3", " " + +GetValue(Ifixe));
                     //Log.d("J3", " " + +GetValue(Ifixe));
                     Log.d("Piece bleu", "in box");
-                    updateTable(grandL, GetValue(Jfixe), GetValue(Ifixe), 1, 5, 5);
+                    updateTable(Bloc4, GetValue(finalPosition_y), GetValue(finalPostion_x), 1, 5, 5);
                     fixer4 =true;
                 }else fixer4 = false;
 
@@ -490,11 +492,11 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
                     /**  force à poser sur la case 1-1
                      * Il l faut trouver le i et le j du grand tableau*/
 
-                    Pos4X=carteCentreGauche +GetValue(Ifixe) * carteTileSize;
-                    Pos4Y= carteCentreHaut + GetValue(Jfixe) * carteTileSize;
+                    Pos4X=carteCentreGauche +GetValue(finalPostion_x) * carteTileSize;
+                    Pos4Y= carteCentreHaut + GetValue(finalPosition_y) * carteTileSize;
 
                     Log.d("Piece black", "in box");
-                    updateTable(piece, GetValue(Jfixe), GetValue(Ifixe), 4, 2, 6);
+                    updateTable(Bloc5, GetValue(finalPosition_y), GetValue(finalPostion_x), 4, 2, 6);
                     fixer =true;
                 }else fixer = false;
 
@@ -516,9 +518,9 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
         return true;
     }
 
+    /** fonction qui vérifie si tu es dedans je dois la refaire il vérifie pour un point de la pièce.**/
     public boolean InBox(int x ,int y){
         int i,j;
-
 
          for(i=0;i<carteHeight;i++){
                 for(j=0;j<carteWidth;j++) {
@@ -539,7 +541,7 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
         return false;
     }
 
-
+    /** fonction qui change la pièce si il est en dedans.**/
     public void updateTable(int temp[][],int x,int y,int tailleX,int tailleY,int id){
         int i,j;
        // Log.d("C :","_"+x+"-"+y);
@@ -561,6 +563,7 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
 
     }
 
+    /** Inutile **/
     public void raseTable(int temp[][],int x,int y,int tailleX,int tailleY,int id){
         int i,j;
         Log.d("C :","_"+x+"-"+y);
@@ -579,10 +582,9 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
 
     }
 
-    public int GetValue(int x) {
-        return x;
-    }
 
+
+    /** fonction qui éfface si la pièce n'est pas dans le complétement dans le bloc.**/
     public void restart(int id){
         int i,j;
         for (i=0; i < carteHeight; i++)
@@ -592,6 +594,7 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
             }
     }
 
+    /** Tu devine.**/
     public boolean YouWin() {
         int i, j;
         if (fixer && fixer2 && fixer3 && fixer4 && fixer1 && nbPiece ==0) {
@@ -603,6 +606,7 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
             return false;
     }
 
+    /** Savoir si il y a des 1.**/
     public int comptageVide(){
         int i, j,cmt=0;
 
@@ -616,9 +620,22 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
         return nbPiece = cmt;
     }
 
-
+    /** Outil neccessaire.**/
     public void SetValue(int x,int y){
-        this.Ifixe = x;
-        this.Jfixe = y;
+        this.finalPostion_x = x;
+        this.finalPosition_y = y;
+    }
+
+    public int GetValue(int x) {
+        return x;
+    }
+    public void afficher(){
+        int i,j;
+
+        for(i=0;i<carteWidth;i++) {
+            for (j = 0; j < carteHeight; j++)
+                System.out.print(Tab[i][j]);
+            System.out.println("");
+        }
     }
 }
