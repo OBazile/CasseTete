@@ -145,7 +145,6 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
         canvas.drawBitmap(win,200,200,null);
     }
 
-
     private void paintForme(Canvas canvas) {
         int i,j,taille =0;
         for (i=0; i < carteWidth; i++ ) {
@@ -233,9 +232,6 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
     }
 
     public void CreePlateforme() {
-
-
-
 
         nombreAléatoire = 0;
 
@@ -348,6 +344,8 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
 
     public boolean onTouchEvent(MotionEvent event) {
         int i,j;
+
+
         int positionX = (int) event.getX();
         int positionY = (int) event.getY();
 
@@ -359,12 +357,12 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
                         touch = true;
 
 
-                for(i=0;i<5;i++) {
-                    for (j = 0; j < 5; j++) {
-                        if (positionX >= Pos1X && positionX < Pos1X + i * carteTileSize && Pos1Y <= positionY && positionY < Pos1Y + j * carteTileSize)
+               /* for(i=0;i<5;i++) {
+                    for (j = 0; j < 5; j++) {*/
+                if (positionX >= Pos1X && positionX < Pos1X + 2 * carteTileSize && Pos1Y <= positionY && positionY < Pos1Y + 2 * carteTileSize)
                                 touch1 = true;
-                    }
-                }
+                    //}
+                //}
 
 
                 for(i=0;i < 4;i++) {
@@ -374,23 +372,21 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
                     }
                 }
 
-                for(i=0;i < 5;i++)
+               /* for(i=0;i < 5;i++)
                     for (j = 0; j < 5; j++) {
 
                             if (positionX >= Pos3X && positionX < Pos3X + i * carteTileSize && Pos3Y <= positionY && positionY < Pos3Y + j * carteTileSize)
                                 touch3 = true;
 
-                    }
+                    }*/
 
 
-                for(i=0;i<5;i++) {
-                    for (j = 0; j < 5; j++) {
-                        if(Pos4X !=2 && Pos4X !=3) {
-                            if (positionX >= Pos4X && positionX < Pos4X + i * carteTileSize && Pos4Y <= positionY && positionY < Pos4Y + j * carteTileSize)
-                                touch4 = true;
-                        }
-                    }
-                }
+               if (positionX >= Pos3X && positionX < Pos3X + 2 * carteTileSize && Pos3Y <= positionY && positionY < Pos3Y + 2 * carteTileSize)
+                   touch3 = true;
+
+                if (positionX >= Pos4X && positionX < Pos4X + 2 * carteTileSize && Pos4Y <= positionY && positionY < Pos4Y + 2 * carteTileSize)
+                    touch4 = true;
+
 
                 break;
 
@@ -398,8 +394,6 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
             case MotionEvent.ACTION_MOVE:
 
                 /* condition drap piece*/
-
-
                 if(touch){
                    restart(2);
                     PosX  = positionX;
@@ -460,10 +454,12 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
 
                    Pos1X=carteCentreGauche +GetValue(Ifixe) * carteTileSize;
                    Pos1Y= carteCentreHaut + GetValue(Jfixe) * carteTileSize;
-                   //raseTable(Plateforme,GetValue(Jfixe),GetValue(Ifixe),4,4,3);
                    updateTable(Plateforme,GetValue(Jfixe),GetValue(Ifixe),4,4,3);
                     fixer2 =true;
-                }else fixer2 = false;
+                }else{
+                   fixer2 = false;
+                   Log.d("Update :","Hors limite");
+               }
 
                 if (InBox(Pos2X, Pos2Y)){
                 /**  force à poser sur la case 1-1
@@ -510,6 +506,7 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
                 touch2 = false;
                 touch3 = false;
                 touch4 = false;
+                comptageVide();
                 YouWin();
                 afficher();
                 break;
@@ -522,24 +519,23 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
     public boolean InBox(int x ,int y){
         int i,j;
 
+
          for(i=0;i<carteHeight;i++){
                 for(j=0;j<carteWidth;j++) {
                 if ( x > carteCentreGauche - carteTileSize
                         && x <= carteCentreGauche + i * carteTileSize && y > carteCentreHaut -carteTileSize
-                        && y <= carteCentreHaut + j * carteTileSize) {
+                        && y <= carteCentreHaut + j * carteTileSize){
+
+                        SetValue(i, j);
 
 
-
-                    SetValue(i,j);
-
-                    Log.d("piece",""+nbPiece);
                     return true;
                 }
                else continue;
             }
 
         }
-
+        Log.d("Inbox :", "Hors limite");
         return false;
     }
 
@@ -550,7 +546,7 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
          if(x >= 0 && x <= carteHeight-tailleX && y >= 0 && y <= carteWidth-tailleY) {
              for (i = x; i < tailleX+x; i++) {
                  for (j = y; j < tailleY+y; j++) {
-                    if(temp[i-x][j-y] == id) {
+                    if(temp[i-x][j-y] == id && Tab[i][j] == 1) {
                         Tab[i][j] = temp[i - x][j - y];
                        // Log.d("Update :", "good" + id);
                     }//else
@@ -561,6 +557,8 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
              //Log.d("Update :","Hors limite");
              raseTable(temp, x, y, tailleX, tailleY, id);
          }
+
+
     }
 
     public void raseTable(int temp[][],int x,int y,int tailleX,int tailleY,int id){
@@ -594,16 +592,30 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
             }
     }
 
-    public boolean YouWin(){
+    public boolean YouWin() {
+        int i, j;
+        if (fixer && fixer2 && fixer3 && fixer4 && fixer1 && nbPiece ==0) {
 
-        if(fixer && fixer2 && fixer3 && fixer4 && fixer1) {
-
-            Log.d("Yes","You Win");
-            return true;
+                        Log.d("Yes", "You Win");
+                        return true;
         }
-        else
-        return false;
+        Log.d("Yes", "No yet"+nbPiece);
+            return false;
     }
+
+    public int comptageVide(){
+        int i, j,cmt=0;
+
+        for (i = 0; i < carteHeight; i++) {
+            for (j = 0; j < carteWidth; j++) {
+                if (Tab[i][j] == 1) {
+                    cmt++;
+                }
+            }
+        }
+        return nbPiece = cmt;
+    }
+
 
     public void SetValue(int x,int y){
         this.Ifixe = x;
