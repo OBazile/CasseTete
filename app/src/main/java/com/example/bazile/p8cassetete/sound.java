@@ -1,8 +1,6 @@
 package com.example.bazile.p8cassetete;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.media.MediaPlayer;
 import android.widget.MediaController;
 
