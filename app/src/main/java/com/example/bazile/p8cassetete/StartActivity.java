@@ -15,12 +15,15 @@ public class StartActivity extends Activity implements View.OnClickListener {
     TextView titre;
     Typeface font1;
     MediaPlayer sound;
+    int code;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
+        code = 5;
        sound = MediaPlayer.create(StartActivity.this, R.raw.sound);
 
         titre = (TextView) findViewById(R.id.start_title);
@@ -31,7 +34,8 @@ public class StartActivity extends Activity implements View.OnClickListener {
         sound.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
-                if(!mp.isPlaying()) mp.start();
+                if (!mp.isPlaying())
+                    mp.start();
                 mp.setLooping(true);
             }
         });
@@ -54,7 +58,7 @@ public class StartActivity extends Activity implements View.OnClickListener {
 
             case R.id.start_about :
                 Intent intent_about = new Intent(this,AboutActivity.class);
-                startActivity(intent_about);
+                startActivityForResult(intent_about, code);
                sound.pause();
             break;
 

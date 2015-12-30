@@ -5,40 +5,39 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.Toast;
 
 import java.util.Random;
-import java.util.Timer;
 
 public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback, Runnable{
 
+    // taille de la carte
+    static final int carteWidth = 5;
+    static final int carteHeight = 5;
+    static final int carteTileSize = 105;
     Bitmap  casseVide,casseRouge,casseJaune,
             casseTurquoise,Fondecran,casseBleu,
             casseBlack,win;
-    Thread  cv_thread;
-    private Resources Res;
-    private Context 	Context;
 
-    // taille de la carte
-    static final int    carteWidth    = 5;
-    static final int    carteHeight   = 5;
-    static final int    carteTileSize = 105;
+    Thread  cv_thread;
+
     int carteCentreGauche,carteCentreHaut;
 
-
+    // booleen qui sert à bloquer le jeu
+    boolean bloquer;
+    // le  score du joueur
     int Score = 0,nbPiece=0;
-    Random r = new Random();
 
+    Random r = new Random();
+    /**
+     * Tableau
+     **/
+    int[][] Tab; /* Bloc principale */
 
     /** Une plateforme a besion des données suivant
      *  Un tableau ou on connait sa taille en x et en y
@@ -54,11 +53,9 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
      *          Des casse differents à chaque briques c'est essentiel
      *
      *          RAPPEL IL FAUT QUE LES TABLEAUX DE BLOC SOIT FORMER 0 PARTIE DE 0 en LINE et 0 COLONNE
-     */         
-
-/** Tableau    **/
-    int [][] Tab; /* Bloc principale */
-    int [][] Bloc1;  /* bloc turquoise */
+     */
+    int[][] Bloc1 = new int[carteHeight][carteWidth];
+    ;  /* bloc turquoise */
     int [][] Bloc2 = new int[carteHeight][carteWidth];  /* bloc jaune */
     int [][] Bloc3 = new int[carteHeight][carteWidth];  /* bloc rouge */
     int [][] Bloc4 = new int[carteHeight][carteWidth];  /* bloc bleu */
@@ -66,30 +63,28 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
 
     /** Variable global qui va récuperer les position i et j selon le drop     **/
     int finalPostion_x,finalPosition_y; // global
-
     /** Position   **/
     int PosX=100,PosY=100; // position turquoise
     int Pos1X=1000, Pos1Y= 200; // position jaune
     int Pos2X=300, Pos2Y= 100;  // position rouge
     int Pos3X=800, Pos3Y= 300;  // position bleu
     int Pos4X=300, Pos4Y= 1000;  // position black
-
     /** booléen de Drap and Drop    **/
     boolean touch = false,  /* bloc turquoise */
             touch1 = false, /* bloc jaune */
             touch2 = false,  /* bloc rouge */
             touch3 = false,  /* bloc bleu */
             touch4 = false;  /* bloc black */
-
     /** booléen de fixation    **/
     boolean fixer1=false,
             fixer2=false,
             fixer3=false,
             fixer4=false,
             fixer=false;
-
     /** Dessin    **/
-    Paint  paint;
+    Paint paint;
+    private Resources Res;
+    private Context Context;
     private boolean go = true; // Pour le draw
     private  SurfaceHolder holder;
 
@@ -116,6 +111,87 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
         cv_thread = new Thread(this);
 
         setFocusable(true);
+    }
+
+    public void initparameters() {
+
+        paint = new Paint();
+        paint.setColor(0xff0000);
+        paint.setDither(true);
+        paint.setColor(0xFFFFFF00);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeJoin(Paint.Join.ROUND);
+        paint.setStrokeCap(Paint.Cap.ROUND);
+        paint.setStrokeWidth(3);
+        paint.setTextAlign(Paint.Align.LEFT);
+
+        Tab = new int[carteHeight][carteWidth];
+
+        Bloc1 = new int[carteHeight][carteWidth];
+        ;  /* bloc turquoise */
+        Bloc2 = new int[carteHeight][carteWidth];  /* bloc jaune */
+        Bloc3 = new int[carteHeight][carteWidth];  /* bloc rouge */
+        Bloc4 = new int[carteHeight][carteWidth];  /* bloc bleu */
+        Bloc5 = new int[carteHeight][carteWidth];  /* bloc black */
+        bloquer = false;
+        // initialisation du tableau principale a vide
+        initialisation();
+        // creattion des formes
+        CreePlateforme();
+
+        carteCentreHaut = (getHeight() - carteHeight * carteTileSize) / 2;
+        carteCentreGauche = (getWidth() - carteWidth * carteTileSize) / 2;
+        PosX = carteCentreGauche + 3 * carteTileSize;
+        PosY = carteCentreGauche + 4 * carteTileSize;
+        if ((cv_thread != null) && (!cv_thread.isAlive())) {
+            cv_thread.start();
+            Log.e("-FCT-", "cv_thread.start()");
+        }
+    }
+
+    public void initialisation( /* int line, int colonne */) {
+        int i, j;
+        for (i = 0; i < carteWidth; i++) {
+            for (j = 0; j < carteHeight; j++) {
+                Tab[i][j] = 1;
+
+            }
+        }
+    }
+
+    //Gereration de brique statique
+    public void CreePlateforme() {
+
+        Bloc1[1][0] = 2;
+        Bloc1[1][1] = 2;
+        Bloc1[0][1] = 2;
+        Bloc1[0][0] = 2;
+
+
+        Bloc2[0][0] = 3;
+        Bloc2[1][0] = 3;
+        Bloc2[2][0] = 3;
+        Bloc2[3][0] = 3;
+        Bloc2[0][1] = 3;
+        Bloc2[0][2] = 3;
+        Bloc2[0][3] = 3;
+
+        Bloc3[0][0] = 4;
+        Bloc3[0][1] = 4;
+        Bloc3[0][2] = 4;
+
+        Bloc4[0][0] = 5;
+        Bloc4[0][1] = 5;
+        Bloc4[0][2] = 5;
+        Bloc4[0][3] = 5;
+        Bloc4[0][4] = 5;
+
+        Bloc5[1][0] = 6;
+        Bloc5[2][0] = 6;
+        Bloc5[0][1] = 6;
+        Bloc5[1][1] = 6;
+        Bloc5[2][1] = 6;
+        Bloc5[3][1] = 6;
     }
 
     /** Dessin du bloque ou on doit placer les platefomes    **/
@@ -232,76 +308,7 @@ public class CasseTeteView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
-    public void initialisation ( /* int line, int colonne */){
-        int i,j;
-        for (i = 0; i < carteWidth;i++ ) {
-            for (j = 0; j < carteHeight; j++) {
-                Tab[i][j] = 1;
 
-            }
-        }
-    }
-
-    //Gereration de brique statique
-    public void CreePlateforme() {
-
-        Bloc1[1][0] = 2;
-        Bloc1[1][1] = 2;
-        Bloc1[0][1] = 2;
-        Bloc1[0][0] = 2;
-
-
-        Bloc2[0][0] = 3;
-        Bloc2[1][0] = 3;
-        Bloc2[2][0] = 3;
-        Bloc2[3][0] = 3;
-        Bloc2[0][1] = 3;
-        Bloc2[0][2] = 3;
-        Bloc2 [0][3] = 3;
-
-        Bloc3[0][0] = 4;
-        Bloc3[0][1] = 4;
-        Bloc3[0][2] = 4;
-
-        Bloc4[0][0] = 5;
-        Bloc4[0][1] = 5;
-        Bloc4[0][2] = 5;
-        Bloc4[0][3] = 5;
-        Bloc4[0][4] = 5;
-
-        Bloc5[1][0] = 6;
-        Bloc5[2][0] = 6;
-        Bloc5[0][1] = 6;
-        Bloc5[1][1] = 6;
-        Bloc5[2][1] = 6;
-        Bloc5[3][1] = 6;
-    }
-
-
-    public void initparameters() {
-        paint = new Paint();
-        paint.setColor(0xff0000);
-        paint.setDither(true);
-        paint.setColor(0xFFFFFF00);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeJoin(Paint.Join.ROUND);
-        paint.setStrokeCap(Paint.Cap.ROUND);
-        paint.setStrokeWidth(3);
-        paint.setTextAlign(Paint.Align.LEFT);
-        Tab = new int[carteHeight][carteWidth];
-        Bloc1 = new int[carteHeight][carteWidth];
-        Bloc2 = new int[carteHeight][carteWidth];
-        initialisation();
-        CreePlateforme();
-        carteCentreHaut = (getHeight() - carteHeight * carteTileSize) / 2;
-        carteCentreGauche = (getWidth() - carteWidth * carteTileSize) / 2;
-        PosX = carteCentreGauche + 3 * carteTileSize;
-        PosY = carteCentreGauche + 4 * carteTileSize;
-        if ((cv_thread!=null) && (!cv_thread.isAlive())) {
-            cv_thread.start();
-            Log.e("-FCT-", "cv_thread.start()");
-        }
-    }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {

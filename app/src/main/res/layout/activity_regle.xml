@@ -1,41 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:layout_height="match_parent"
+    android:background="@drawable/fond_ecran"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.example.bazile.p8cassetete.AboutActivity"
-    android:background="@drawable/fond_ecran">
+    tools:context="com.example.bazile.p8cassetete.AboutActivity">
 
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/scrollView"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true">
 
         <TextView
+            android:id="@+id/regleText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Règle:
+             Le but du jeu est de placer toutes les pièces donnée dans le moule dans le temps impartie.
+             d'une minute et quarante seconde .
+             "
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@android:color/white"
-            android:text="Règle"
-            android:textSize="30pt"
-            android:id="@+id/regleText" />
+            android:textSize="12pt" />
     </ScrollView>
 
     <Button
+        android:id="@+id/regleButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Retour"
-        android:id="@+id/regleButton"
-        android:textSize="20pt"
-        android:textColor="@android:color/white"
-        android:background="@android:color/transparent"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:background="@android:color/transparent"
+        android:text="Retour"
+        android:textColor="@android:color/white"
+        android:textSize="20pt" />
 
 
 </RelativeLayout>

@@ -4,19 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.SystemClock;
 import android.media.MediaPlayer;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.Random;
-import java.util.Timer;
 
 public class PlayActivity extends Activity {
 
@@ -37,7 +31,7 @@ public class PlayActivity extends Activity {
         setContentView(R.layout.activity_play);
 
         intentSuiv = new Intent(this,PlayActivity.class);
-        score = intentSuiv.getIntExtra("Score",score);
+        score = intentSuiv.getIntExtra("Score", score);
         intentSuiv = getIntent();
 
         /*TextView */
@@ -50,6 +44,7 @@ public class PlayActivity extends Activity {
         lose.setTypeface(font, Typeface.NORMAL);
         lose.setVisibility(View.INVISIBLE);
 
+        //
         level.setTypeface(font, Typeface.NORMAL);
 
         text_temps.setTypeface(font, Typeface.NORMAL);
@@ -59,8 +54,8 @@ public class PlayActivity extends Activity {
         ffsound = MediaPlayer.create(PlayActivity.this, R.raw.sound);
 
         /* Button et chronometre */
-        Suivant  = (Button) findViewById(R.id.Suivant);
-        Retour = (Button) findViewById(R.id.Retour);
+        Suivant = (Button) findViewById(R.id.playSuivant);
+        Retour = (Button) findViewById(R.id.playRetour);
         tempsStart = (Chronometer) findViewById(R.id.chronometer);
 
         Suivant.setTypeface(font);
@@ -101,7 +96,7 @@ public class PlayActivity extends Activity {
                     text_temps.setTextColor(Color.parseColor("#00E5FF"));
                     tempsStart.stop();
                     jeu.bloquer = false;
-                    score = score+1;
+                    score = score + 1;
                     Retour.setVisibility(View.VISIBLE);
                     Suivant.setVisibility(View.VISIBLE);
                 }
@@ -118,22 +113,21 @@ public class PlayActivity extends Activity {
         });
 
             jeu = (CasseTeteView) findViewById(R.id.Cassetete);
-            jeu.setStart(5, 5); //random
+        // jeu.setStart(5, 5); //random
 
             jeu.setVisibility(View.VISIBLE);
         level.setText("Level:" + score);
-
     }
 
     /** ... Touche ... **/
     public void onClick(View v){
         switch (v.getId()) {
-            case R.id.Retour:
+            case R.id.playRetour:
                 Intent intentRetour = new Intent(this,StartActivity.class);
                 startActivity(intentRetour);
                 ffsound.stop();
                 break;
-            case R.id.Suivant:
+            case R.id.playSuivant:
                 Intent intentSuiv = new Intent(this,PlayActivity.class);
                 intentSuiv.putExtra("Score",score);
                 startActivity(intentSuiv);

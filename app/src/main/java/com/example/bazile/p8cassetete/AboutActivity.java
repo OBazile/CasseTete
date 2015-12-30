@@ -28,6 +28,7 @@ public class AboutActivity extends Activity {
         aboutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //finishActivity(5);
                 Intent intentRetour = new Intent(AboutActivity.this,StartActivity.class);
                 startActivity(intentRetour);
             }
