@@ -1,5 +1,7 @@
 package com.example.bazile.p8cassetete.levels;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 /**
@@ -61,4 +63,15 @@ public class Level {
         Bloc b = new Bloc(posX, posY, tailleX, tailleY, forme, id);
         this.list_bloc.add(b);
     }
+
+    public void affiche_Tab() {
+        for (int i = 0; i < carteHeight; i++) {
+            Log.d("Tab : ", " " + "Ligne :" + i);
+            for (int j = 0; j < carteWidth; j++) {
+                Log.d("Tab : ", " " + Tab[i][j]);
+            }
+
+        }
+    }
+
 }
