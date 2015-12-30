@@ -10,12 +10,7 @@
     tools:context="com.example.bazile.p8cassetete.AboutActivity">
 
 
-    <ScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true">
+
 
         <TextView
             android:id="@+id/regleText"
@@ -27,8 +22,7 @@
              "
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@android:color/white"
-            android:textSize="12pt" />
-    </ScrollView>
+            android:textSize="32pt" />
 
     <Button
         android:id="@+id/regleButton"

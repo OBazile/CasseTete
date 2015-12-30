@@ -12,9 +12,9 @@ import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.TextView;
 
-public class PlayActivity extends Activity {
+public class PlayActivity extends Activity implements View.OnClickListener {
 
-        CasseTeteView jeu;
+    CasseTeteView2 jeu;
         TextView text_temps,lose,level;
         Button Retour,Suivant;
         Typeface font;
@@ -33,6 +33,9 @@ public class PlayActivity extends Activity {
         intentSuiv = new Intent(this,PlayActivity.class);
         score = intentSuiv.getIntExtra("Score", score);
         intentSuiv = getIntent();
+
+        //
+        jeu = (CasseTeteView2) findViewById(R.id.Cassetete2);
 
         /*TextView */
         text_temps = (TextView) findViewById(R.id.temps);
@@ -96,9 +99,11 @@ public class PlayActivity extends Activity {
                     text_temps.setTextColor(Color.parseColor("#00E5FF"));
                     tempsStart.stop();
                     jeu.bloquer = false;
+
                     score = score + 1;
                     Retour.setVisibility(View.VISIBLE);
                     Suivant.setVisibility(View.VISIBLE);
+
                 }
             }
         });
@@ -112,8 +117,7 @@ public class PlayActivity extends Activity {
             }
         });
 
-            jeu = (CasseTeteView) findViewById(R.id.Cassetete);
-        // jeu.setStart(5, 5); //random
+        jeu = (CasseTeteView2) findViewById(R.id.Cassetete2);
 
             jeu.setVisibility(View.VISIBLE);
         level.setText("Level:" + score);
@@ -135,5 +139,15 @@ public class PlayActivity extends Activity {
                 break;
         }
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (ffsound.isPlaying()) {
+            ffsound.pause();
+        } else {
+            return;
+        }
     }
 }
