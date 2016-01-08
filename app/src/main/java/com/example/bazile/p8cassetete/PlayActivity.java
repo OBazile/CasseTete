@@ -75,12 +75,12 @@ public class PlayActivity extends Activity implements View.OnClickListener {
         tempsStart.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
             public void onChronometerTick(Chronometer chronometer) {
-                if (chronometer.getText().toString().equalsIgnoreCase("01:00")) {
+                if (chronometer.getText().toString().equalsIgnoreCase("10:00")) {
                     tempsStart.setTextColor(Color.parseColor("#FFEB3B"));
                     text_temps.setTextColor(Color.parseColor("#FFEB3B"));
                 }
 
-                if (chronometer.getText().toString().equalsIgnoreCase("01:40")) {
+                if (chronometer.getText().toString().equalsIgnoreCase("10:40")) {
                     tempsStart.stop();
                     tempsStart.setTextColor(Color.parseColor("#F44336"));
                     text_temps.setTextColor(Color.parseColor("#F44336"));
@@ -98,9 +98,9 @@ public class PlayActivity extends Activity implements View.OnClickListener {
                     tempsStart.setTextColor(Color.parseColor("#00E5FF"));
                     text_temps.setTextColor(Color.parseColor("#00E5FF"));
                     tempsStart.stop();
-                    jeu.bloquer = false;
+                    //jeu.bloquer = false;
 
-                    score = score + 1;
+
                     Retour.setVisibility(View.VISIBLE);
                     Suivant.setVisibility(View.VISIBLE);
 
@@ -118,8 +118,7 @@ public class PlayActivity extends Activity implements View.OnClickListener {
         });
 
         jeu = (CasseTeteView2) findViewById(R.id.Cassetete2);
-
-            jeu.setVisibility(View.VISIBLE);
+        jeu.setVisibility(View.VISIBLE);
         level.setText("Level:" + score);
     }
 
@@ -132,8 +131,6 @@ public class PlayActivity extends Activity implements View.OnClickListener {
                 ffsound.stop();
                 break;
             case R.id.playSuivant:
-                Intent intentSuiv = new Intent(this,PlayActivity.class);
-                intentSuiv.putExtra("Score",score);
                 startActivity(intentSuiv);
                 ffsound.stop();
                 break;
@@ -141,13 +138,6 @@ public class PlayActivity extends Activity implements View.OnClickListener {
 
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (ffsound.isPlaying()) {
-            ffsound.pause();
-        } else {
-            return;
-        }
-    }
+
+
 }
