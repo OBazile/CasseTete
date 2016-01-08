@@ -31,6 +31,8 @@ public class CasseTeteView2 extends SurfaceView implements SurfaceHolder.Callbac
     boolean bloquer;
 
 
+
+
     // le  score du joueur
     int Score = 0, nbPiece = 0;
 
@@ -90,16 +92,18 @@ public class CasseTeteView2 extends SurfaceView implements SurfaceHolder.Callbac
         paint.setStrokeWidth(3);
         paint.setTextAlign(Paint.Align.LEFT);
 
-
         bloquer = false;
 
         levels = new ArrayList<>();
+
 
         adding_levels();
         Log.e("initparameters levels", "" + levels.size());
         int choix_level = r.nextInt(3);
         // choix_level = 0;
+
         currentLevel = levels.get(choix_level);
+
 
 
 
@@ -125,6 +129,7 @@ public class CasseTeteView2 extends SurfaceView implements SurfaceHolder.Callbac
         int[][] blc3 = new int[currentLevel.carteHeight][currentLevel.carteWidth];
         int[][] blc4 = new int[currentLevel.carteHeight][currentLevel.carteWidth];
         int[][] blc5 = new int[currentLevel.carteHeight][currentLevel.carteWidth];
+
 
         initzeros(blc0);
 
@@ -190,16 +195,12 @@ public class CasseTeteView2 extends SurfaceView implements SurfaceHolder.Callbac
         int[][] blc5 = new int[currentLevel.carteHeight][currentLevel.carteWidth];
 
         initzeros(blc0);
-
         initzeros(blc1);
-
         initzeros(blc2);
-
         initzeros(blc3);
-
         initzeros(blc4);
-
         initzeros(blc5);
+
 
         com.example.bazile.p8cassetete.levels.Level level1 = new com.example.bazile.p8cassetete.levels.Level();
         // premiers bloc
@@ -252,16 +253,12 @@ public class CasseTeteView2 extends SurfaceView implements SurfaceHolder.Callbac
         int[][] blc5 = new int[currentLevel.carteHeight][currentLevel.carteWidth];
 
         initzeros(blc0);
-
         initzeros(blc1);
-
         initzeros(blc2);
-
         initzeros(blc3);
-
         initzeros(blc4);
-
         initzeros(blc5);
+
 
         com.example.bazile.p8cassetete.levels.Level level1 = new com.example.bazile.p8cassetete.levels.Level();
         // premiers bloc
@@ -321,13 +318,25 @@ public class CasseTeteView2 extends SurfaceView implements SurfaceHolder.Callbac
         }
     }
 
+    public void inilisation(int[][] blocs) {
+
+        for (int i = 0; i < currentLevel.carteWidth; i++) {
+            for (int j = 0; j < currentLevel.carteHeight; j++) {
+                blocs[i][j] = 1;
+            }
+
+        }
+    }
+
+
+
     /**
      * Dessin du bloque ou on doit placer les platefomes
      **/
     private void paintCarte(Canvas canvas) {
         int i, j;
-        for (i = 0; i < currentLevel.carteWidth; i++)
-            for (j = 0; j < currentLevel.carteHeight; j++) {
+        for (i = 0; i < 5; i++)
+            for (j = 0; j < 5; j++) {
                 switch (currentLevel.Tab[i][j]) {
                     case 0:
                         canvas.drawBitmap(casseVide, carteCentreGauche + j * currentLevel.carteTileSize, carteCentreHaut + i * currentLevel.carteTileSize, null);
@@ -353,7 +362,7 @@ public class CasseTeteView2 extends SurfaceView implements SurfaceHolder.Callbac
                     case 7:
                         canvas.drawBitmap(casseVert, carteCentreGauche + j * currentLevel.carteTileSize, carteCentreHaut + i * currentLevel.carteTileSize, null);
                 }
-                break;
+
 
 
             }
@@ -406,15 +415,10 @@ public class CasseTeteView2 extends SurfaceView implements SurfaceHolder.Callbac
 
     private void nDraw(Canvas canvas) {
         canvas.drawBitmap(Fondecran, 0, 0, null);
-        if (YouWin()) {
-            paintCarte(canvas);
-            paintBloc(canvas);
-            paintWin(canvas);
+        paintCarte(canvas);
+        paintBloc(canvas);
 
-        } else {
-            paintCarte(canvas);
-            paintBloc(canvas);
-        }
+
     }
 
 
@@ -427,7 +431,7 @@ public class CasseTeteView2 extends SurfaceView implements SurfaceHolder.Callbac
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         Log.i("-> FCT <-", "surfaceChanged " + width + " - " + height);
         initparameters();
-        //  afficher();
+         afficher();
     }
 
     @Override
@@ -460,12 +464,10 @@ public class CasseTeteView2 extends SurfaceView implements SurfaceHolder.Callbac
         }
     }
 
-
-
     public boolean onTouchEvent(MotionEvent event) {
         int positionX = (int) event.getX();
         int positionY = (int) event.getY();
-
+        int i=0;
         switch (event.getAction()) {
 
             case MotionEvent.ACTION_DOWN:
@@ -492,6 +494,9 @@ public class CasseTeteView2 extends SurfaceView implements SurfaceHolder.Callbac
                         b.setPosY(carteCentreHaut + GetValue(finalPosition_y) * currentLevel.carteTileSize);
                         updateTable(b, GetValue(finalPosition_y), GetValue(finalPostion_x), b.getId());
                         Log.d("Inbox", "is inbox");
+                        Log.d("line", "" + GetValue(finalPostion_x));
+                        Log.d("row", ""+ GetValue(finalPosition_y));
+                        Log.d("row",""+i );
                         b.setEst_fixe(true);
                     } else {
                         b.setEst_fixe(false);
@@ -505,6 +510,7 @@ public class CasseTeteView2 extends SurfaceView implements SurfaceHolder.Callbac
                     b.setEst_touche(false);
                 }
                 comptageVide();
+                afficher();
                 YouWin();
                 break;
         }
@@ -525,6 +531,7 @@ public class CasseTeteView2 extends SurfaceView implements SurfaceHolder.Callbac
                         && x <= carteCentreGauche + i * currentLevel.carteTileSize && y > carteCentreHaut - currentLevel.carteTileSize
                         && y <= carteCentreHaut + j * currentLevel.carteTileSize) {
 
+                    Log.d("Setup :", ""+i+""+j);
                     SetValue(i, j);
                     return true;
                 } else continue;
@@ -540,17 +547,26 @@ public class CasseTeteView2 extends SurfaceView implements SurfaceHolder.Callbac
      **/
     public void updateTable(Bloc temp, int x, int y, int id) {
         int i, j;
+        Log.d("Update0 :", "Il y a qq1 ou quoi");
         if (x >= 0 && x <= currentLevel.carteHeight - temp.getTailleX() && y >= 0 && y <= currentLevel.carteWidth - temp.getTailleY()) {
+            Log.d("Update0 :", "Tes dedans");
             for (i = x; i < temp.getTailleX() + x; i++) {
+                Log.d("Alors :", ""+i);
                 for (j = y; j < temp.getTailleY() + y; j++) {
+                    Log.d("Alors2 :", ""+j);
                     if (temp.getForme()[i - x][j - y] == id && currentLevel.Tab[i][j] == 1) {
                         currentLevel.Tab[i][j] = temp.getForme()[i - x][j - y];
-
+                        Log.d("Update :", "i"+x+""+"j"+y);
+                    }
+                    else {
+                        //raseTable(temp, x, y, id);
+                        Log.d("Update1 :", "No");
                     }
                 }
             }
         } else {
             //raseTable(temp, x, y, id);
+            Log.d("Update2 :", "No");
         }
 
 
