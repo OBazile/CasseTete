@@ -75,12 +75,12 @@ public class PlayActivity extends Activity implements View.OnClickListener {
         tempsStart.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
             public void onChronometerTick(Chronometer chronometer) {
-                if (chronometer.getText().toString().equalsIgnoreCase("10:00")) {
+                if (chronometer.getText().toString().equalsIgnoreCase("00:30")) {
                     tempsStart.setTextColor(Color.parseColor("#FFEB3B"));
                     text_temps.setTextColor(Color.parseColor("#FFEB3B"));
                 }
 
-                if (chronometer.getText().toString().equalsIgnoreCase("10:40")) {
+                if (chronometer.getText().toString().equalsIgnoreCase("01:00")) {
                     tempsStart.stop();
                     tempsStart.setTextColor(Color.parseColor("#F44336"));
                     text_temps.setTextColor(Color.parseColor("#F44336"));
@@ -98,9 +98,7 @@ public class PlayActivity extends Activity implements View.OnClickListener {
                     tempsStart.setTextColor(Color.parseColor("#00E5FF"));
                     text_temps.setTextColor(Color.parseColor("#00E5FF"));
                     tempsStart.stop();
-                    //jeu.bloquer = false;
-
-
+                    jeu.bloquer = false;
                     Retour.setVisibility(View.VISIBLE);
                     Suivant.setVisibility(View.VISIBLE);
 
@@ -109,7 +107,7 @@ public class PlayActivity extends Activity implements View.OnClickListener {
         });
 
         /** ... Music ... **/
-        ffsound.start();
+        // ffsound.start();
         ffsound.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
@@ -130,12 +128,23 @@ public class PlayActivity extends Activity implements View.OnClickListener {
                 startActivity(intentRetour);
                 ffsound.stop();
                 break;
+
             case R.id.playSuivant:
                 startActivity(intentSuiv);
                 ffsound.stop();
                 break;
         }
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (ffsound.isPlaying()) {
+            ffsound.pause();
+        } else {
+            return;
+        }
     }
 
 
