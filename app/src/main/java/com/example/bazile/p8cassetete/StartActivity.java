@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -48,7 +49,31 @@ public class StartActivity extends Activity implements View.OnClickListener {
     }
 
     @Override
+    protected void onStop() {
+        Log.d("StartActivity", "OnStop");
+        sound.stop();
+        super.onStop();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d("StartActivity", "OnStop");
+        sound.pause();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d("StartActivity", "OnStop");
+        if (!sound.isPlaying())
+            sound.start();
+
+        super.onResume();
+    }
+
+    @Override
     public void onClick(View v) {
+        Log.d("StartActivity", "OnClick");
         switch (v.getId()){
             case R.id.start_play:
                 Intent intent_play = new Intent(this,PlayActivity.class);

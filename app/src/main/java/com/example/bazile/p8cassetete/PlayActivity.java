@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
@@ -27,7 +28,9 @@ public class PlayActivity extends Activity implements View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        Log.d("PlayActivity", "Oncreate");
         setContentView(R.layout.activity_play);
 
         intentSuiv = new Intent(this,PlayActivity.class);
@@ -122,8 +125,46 @@ public class PlayActivity extends Activity implements View.OnClickListener {
         level.setText("Level:" + score);
     }
 
+    @Override
+    protected void onStop() {
+        Log.d("PlayActivity", "OnStop");
+        ffsound.stop();
+        super.onStop();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d("PlayActivity", "OnPause");
+        ffsound.pause();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d("PlayActivity", "OnResume");
+
+        if (!ffsound.isPlaying()) {
+            ffsound.start();
+        }
+
+        super.onResume();
+    }
+
+    @Override
+    protected void onRestart() {
+        Log.d("PlayActivity", "OnRestart");
+        if (ffsound.isPlaying()) {
+            ffsound.stop();
+            ffsound.start();
+        }
+        ffsound.start();
+        super.onRestart();
+    }
+
     /** ... Touche ... **/
     public void onClick(View v){
+        Log.d("PlayActivity", "OnCLick");
+
         switch (v.getId()) {
             case R.id.playRetour:
                 Intent intentRetour = new Intent(this,StartActivity.class);
